@@ -34,7 +34,7 @@ export default function SignInPage() {
       setAuth(user, accessToken);
 
       // 대시보드 > 채팅페이지로 이동
-      router.push("/chat");
+      router.push("/");
     } catch (err: any) {
       setError(err.response?.data?.message || "로그인에 실패했습니다.");
     } finally {

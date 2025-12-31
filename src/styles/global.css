@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+@theme {
+  --color-primary: #ef6c00;
+  --color-primary-softer: #ffcc80;
+  --color-primary-light: #ffe0b2;
+  --color-primary-lightest: #fff3e0;
+  --color-primary-dark: #e65100;
+  --color-secondary: #ffc400;
+  --color-secondary-dark: #ffab00;
+  --color-warning: #ff4f64;
+  --color-warning-light: #ffeef0;
+
+  --font-sans: "Pretendard", "sans-serif";
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  --shadow-chat-bubble: 2px 2px 8px 0px #424242;
+}
+
+/* 공통 body 스타일 */
+body {
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    sans-serif;
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4;
+  border-radius: 9999px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #c4c4c4;
+}

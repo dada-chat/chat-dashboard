@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { NAVIGATION } from "@/constants/navigation";
 
 export default function Home() {
   const router = useRouter();
@@ -10,11 +11,11 @@ export default function Home() {
 
   useEffect(() => {
     if (accessToken) {
-      router.replace("/chat");
+      router.replace(NAVIGATION.CHAT);
     } else {
-      router.replace("/auth/signin");
+      router.replace(NAVIGATION.SIGNIN);
     }
   }, [accessToken, router]);
 
-  return null; // 화면 표시 X
+  return null;
 }

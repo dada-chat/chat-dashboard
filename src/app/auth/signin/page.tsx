@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { useAuthStore } from "@/store/authStore";
@@ -8,6 +8,7 @@ import { FormInput } from "@/components/ui/FormInput";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { SignInResponse } from "@/types/auth";
+import { NAVIGATION } from "@/constants/navigation";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,14 @@ export default function SignInPage() {
   const [error, setError] = useState("");
 
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const { accessToken, user, setAuth } = useAuthStore();
+
+  //  사용자 정보 확인
+  useEffect(() => {
+    if (accessToken && user) {
+      router.replace(NAVIGATION.HOME);
+    }
+  }, [accessToken, user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +41,7 @@ export default function SignInPage() {
       // 전역 상태에 저장
       setAuth(user, accessToken);
 
-      // 대시보드 > 채팅페이지로 이동
+      // 사용자 대시보드
       router.push("/");
     } catch (err: any) {
       setError(err.response?.data?.message || "로그인에 실패했습니다.");

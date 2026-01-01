@@ -1,5 +1,8 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/authStore";
+import { signout } from "./auth";
+import { broadcastSignout } from "./authBroadcast";
+import { NAVIGATION } from "@/constants/navigation";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api",
@@ -36,7 +39,9 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest); // 실패했던 요청 재시도
       } catch (refreshError) {
-        useAuthStore.getState().signout(); // 리프레시도 실패하면 로그아웃
+        await signout();
+        broadcastSignout();
+        window.location.href = NAVIGATION.SIGNIN;
         return Promise.reject(refreshError);
       }
     }

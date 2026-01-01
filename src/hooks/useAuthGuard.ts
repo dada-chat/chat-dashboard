@@ -11,17 +11,19 @@ interface UseAuthGuardOptions {
 
 export function useAuthGuard(options?: UseAuthGuardOptions) {
   const router = useRouter();
-  const { accessToken, user } = useAuthStore();
+  const { accessToken, user, hasHydrated } = useAuthStore();
 
   const isAuthenticated = Boolean(accessToken && user);
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
       router.replace(options?.redirectTo ?? NAVIGATION.SIGNIN);
     }
-  }, [isAuthenticated, router, options?.redirectTo]);
+  }, [hasHydrated, isAuthenticated, router, options?.redirectTo]);
 
   return {
     isAuthenticated,
+    isLoading: !hasHydrated,
     user,
   };
 }

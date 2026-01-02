@@ -3,7 +3,7 @@
 import clsx from "clsx";
 import { ButtonHTMLAttributes } from "react";
 
-type ButtonVariant =
+export type ButtonVariant =
   | "primary"
   | "secondary"
   | "disabled"
@@ -11,7 +11,7 @@ type ButtonVariant =
   | "line"
   | "linePrimary"
   | "none";
-type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -20,7 +20,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const baseStyle =
-  "group relative inline-flex w-full items-center justify-center rounded-md font-medium focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400";
+  "group relative inline-flex w-full gap-2 items-center justify-center rounded-md font-medium focus:outline-none disabled:cursor-not-allowed disabled:bg-gray-400";
 
 const variantStyle: Record<ButtonVariant, string> = {
   primary: "bg-primary text-white hover:bg-primary-dark",
@@ -29,7 +29,7 @@ const variantStyle: Record<ButtonVariant, string> = {
   danger: "bg-red-600 text-white hover:bg-red-700",
   line: "bg-white border-gray-300 text-gray-600 hover:bg-gray-50",
   linePrimary: "bg-white border-primary text-gray-900 hover:bg-red-700",
-  none: "px-0 bg-white text-gray-600",
+  none: "px-0 bg-transparent text-gray-600",
 };
 
 const sizeStyle: Record<ButtonSize, string> = {

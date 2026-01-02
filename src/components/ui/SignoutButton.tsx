@@ -3,21 +3,44 @@
 import { signout } from "@/lib/auth";
 import { broadcastSignout } from "@/lib/authBroadcast";
 import { useRouter } from "next/navigation";
-import { Button } from "./Button";
+import { Button, ButtonSize, ButtonVariant } from "./Button";
 import { NAVIGATION } from "@/constants/navigation";
+import { useState } from "react";
 
-export const SignoutButton = () => {
+interface SignoutButtonProps {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+export const SignoutButton = ({
+  variant = "none",
+  size = "sm",
+  children,
+  className = "!w-auto",
+}: SignoutButtonProps) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogout = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
     await signout();
     broadcastSignout();
     router.replace(NAVIGATION.SIGNIN);
   };
 
   return (
-    <Button variant="none" size="sm" onClick={handleLogout} className="w-auto">
-      로그아웃
+    <Button
+      variant={variant}
+      size={size}
+      onClick={handleLogout}
+      className={className}
+      disabled={isLoading}
+    >
+      {children ? children : "로그아웃"}
     </Button>
   );
 };

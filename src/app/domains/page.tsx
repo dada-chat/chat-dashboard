@@ -9,11 +9,17 @@ import Link from "next/link";
 import NodataArea from "@/components/ui/NodataArea";
 import { useAuthStore } from "@/store/authStore";
 import { Toggle } from "@/components/ui/Toggle";
+import { ModalFormDomain } from "@/components/ui/ModalFormDomain";
+import { Button } from "@/components/ui/Button";
 
 export default function DomainPage() {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuthStore();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const fetchDomains = async () => {
     try {
@@ -110,9 +116,16 @@ export default function DomainPage() {
     },
   ];
 
+  if (!user) return null;
+
   return (
     <DashboardLayout>
-      <div className="flex px-6">
+      <div className="flex flex-col gap-4 px-6">
+        <div>
+          <Button size="md" className="!w-auto" onClick={openModal}>
+            도메인 추가
+          </Button>
+        </div>
         {domains.length > 0 ? (
           <Table
             columns={baseColumns}
@@ -123,6 +136,12 @@ export default function DomainPage() {
           <NodataArea />
         )}
       </div>
+      <ModalFormDomain
+        user={user}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSuccess={fetchDomains}
+      />
     </DashboardLayout>
   );
 }

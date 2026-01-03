@@ -7,6 +7,11 @@ export interface Domain {
   createdAt: string;
 }
 
+export interface CreateDomain {
+  domainUrl: string;
+  targetOrgId: string;
+}
+
 export interface DomainResponse {
   success: boolean;
   data: Domain[];

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Table } from "@/components/ui/Table";
-import { getDomains, updateDomainStatus } from "@/lib/domain";
+import { getDomains, updateDomainStatus, deleteDomain } from "@/lib/domain";
 import { Domain } from "@/types/domain";
 import Link from "next/link";
 import NodataArea from "@/components/ui/NodataArea";
@@ -51,6 +51,15 @@ export default function DomainPage() {
       fetchDomains();
     } else {
       alert(result.message || "도메인 상태 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("정말 이 도메인을 삭제하시겠습니까?")) return;
+
+    const result = await deleteDomain(id);
+    if (result.success) {
+      fetchDomains(); // 목록 갱신
     }
   };
 
@@ -116,6 +125,26 @@ export default function DomainPage() {
     },
   ];
 
+  const actionColumn = {
+    header: "관리",
+    className: "w-24",
+    render: (row: Domain) => (
+      <div className="flex gap-2 w-24">
+        <Button
+          size="sm"
+          variant="danger"
+          className="!w-auto"
+          onClick={() => handleDelete(row.id)}
+        >
+          삭제
+        </Button>
+      </div>
+    ),
+  };
+
+  const columns =
+    user?.role === "ADMIN" ? [...baseColumns, actionColumn] : baseColumns;
+
   if (!user) return null;
 
   return (
@@ -127,11 +156,7 @@ export default function DomainPage() {
           </Button>
         </div>
         {domains.length > 0 ? (
-          <Table
-            columns={baseColumns}
-            data={domains}
-            rowKey={(row) => row.id}
-          />
+          <Table columns={columns} data={domains} rowKey={(row) => row.id} />
         ) : (
           <NodataArea />
         )}

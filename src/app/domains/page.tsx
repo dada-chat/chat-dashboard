@@ -1,0 +1,128 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import { Table } from "@/components/ui/Table";
+import { getDomains, updateDomainStatus } from "@/lib/domain";
+import { Domain } from "@/types/domain";
+import Link from "next/link";
+import NodataArea from "@/components/ui/NodataArea";
+import { useAuthStore } from "@/store/authStore";
+import { Toggle } from "@/components/ui/Toggle";
+
+export default function DomainPage() {
+  const [domains, setDomains] = useState<Domain[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuthStore();
+
+  const fetchDomains = async () => {
+    try {
+      const response = await getDomains(); // DomainResponse
+      if (response.success) {
+        setDomains(response.data);
+      }
+    } catch (error) {
+      console.error("도메인 로드 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDomains();
+  }, []);
+
+  const handleStatusToggle = async (
+    domainId: string,
+    currentStatus: boolean
+  ) => {
+    const newStatus = !currentStatus;
+
+    const result = await updateDomainStatus(domainId, newStatus);
+
+    if (result.success) {
+      alert("선택하신 도메인 상태가 변경되었습니다.");
+      fetchDomains();
+    } else {
+      alert(result.message || "도메인 상태 중 오류가 발생했습니다.");
+    }
+  };
+
+  if (isLoading) return <div>로딩 중...</div>;
+
+  // 테이블 컬럼 정의
+  const baseColumns = [
+    {
+      header: "No.",
+      className: "w-16 text-center", // 너비 고정
+      render: (_: Domain, index: number) => (
+        <span className="text-gray-400 font-mono">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+      ),
+    },
+    {
+      header: "도메인 URL",
+      render: (row: Domain) => (
+        <Link
+          href={row.domainUrl}
+          target="_blank"
+          className="text-gray-800 font-semibold hover:text-primary hover:underline"
+        >
+          {row.domainUrl}
+        </Link>
+      ),
+    },
+    {
+      header: "생성일",
+      render: (row: Domain) => new Date(row.createdAt).toLocaleDateString(),
+    },
+    {
+      header: "상태",
+      render: (row: Domain) => {
+        // MANAGER가 아닌 경우(AGENT, ADMIN) 토글 렌더링
+        if (user?.role === "AGENT" || user?.role === "ADMIN") {
+          return (
+            <div className="flex">
+              <Toggle
+                enabled={row.isActive}
+                onChange={() => handleStatusToggle(row.id, row.isActive)}
+              />
+            </div>
+          );
+        }
+
+        // MANAGER인 경우 읽기 전용
+        return (
+          <div className="flex">
+            <span
+              className={`px-2 py-1 rounded-full text-xs font-medium ${
+                row.isActive
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {row.isActive ? "활성" : "비활성"}
+            </span>
+          </div>
+        );
+      },
+    },
+  ];
+
+  return (
+    <DashboardLayout>
+      <div className="flex px-6">
+        {domains.length > 0 ? (
+          <Table
+            columns={baseColumns}
+            data={domains}
+            rowKey={(row) => row.id}
+          />
+        ) : (
+          <NodataArea />
+        )}
+      </div>
+    </DashboardLayout>
+  );
+}

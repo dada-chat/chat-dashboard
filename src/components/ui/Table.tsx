@@ -1,17 +1,18 @@
 import React from "react";
 import { Domain } from "@/types/domain";
+import { User } from "@/types/user";
 
 // Column 정의
 interface Column {
   header: string;
-  render: (row: Domain, index: number) => React.ReactNode;
+  render: (row: Domain | User, index: number) => React.ReactNode;
   className?: string;
 }
 
 interface TableProps {
   columns: Column[];
-  data: Domain[];
-  rowKey?: (row: Domain) => string | number;
+  data: Domain[] | User[];
+  rowKey?: (row: Domain | User) => string | number;
   tableClassName?: string;
 }
 
@@ -55,8 +56,8 @@ function TableBody({
   rowKey,
 }: {
   columns: Column[];
-  data: Domain[];
-  rowKey?: (row: Domain) => string | number;
+  data: Domain[] | User[];
+  rowKey?: (row: Domain | User) => string | number;
 }) {
   return (
     <tbody>

@@ -77,7 +77,7 @@ export default function NavigationBar() {
             />
           ))}
         </ul>
-        {filteredAdminItems.length > 0 && (
+        {/* {filteredAdminItems.length > 0 && (
           <ul className="border-t border-gray-300 pt-2 flex flex-col gap-2">
             {filteredAdminItems.map((item) => (
               <MenuItem
@@ -88,7 +88,7 @@ export default function NavigationBar() {
               />
             ))}
           </ul>
-        )}
+        )} */}
       </nav>
 
       {/* 하단 유저/토글 영역 */}

@@ -27,8 +27,9 @@ const variantStyle: Record<ButtonVariant, string> = {
   secondary: "bg-secondary text-gray-900 hover:bg-gray-200",
   disabled: "bg-gray-100 text-gray-500 hover:bg-gray-200",
   danger: "bg-red-600 text-white hover:bg-red-700",
-  line: "bg-white border-gray-300 text-gray-600 hover:bg-gray-50",
-  linePrimary: "bg-white border-primary text-gray-900 hover:bg-red-700",
+  line: "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50",
+  linePrimary:
+    "bg-white border border-primary text-primary hover:bg-primary-lightest",
   none: "px-0 bg-transparent text-gray-600",
 };
 

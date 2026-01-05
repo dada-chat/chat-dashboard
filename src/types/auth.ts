@@ -1,5 +1,5 @@
 export type UserRole = "ADMIN" | "MANAGER" | "AGENT";
-export interface User {
+export interface AuthUser {
   id: string;
   email: string;
   name: string;
@@ -11,7 +11,7 @@ export interface SignInResponse {
   success: boolean;
   data: {
     accessToken: string;
-    user: User;
+    user: AuthUser;
   };
 }
 

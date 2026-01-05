@@ -1,9 +1,12 @@
+import clsx from "clsx";
+
 interface FormInputProps {
   label: string;
   type?: "text" | "email" | "password";
   value: string;
   placeholder?: string;
   required?: boolean;
+  disabled?: boolean;
   onChange: (value: string) => void;
 }
 
@@ -13,6 +16,7 @@ export function FormInput({
   value,
   placeholder,
   required = false,
+  disabled = false,
   onChange,
 }: FormInputProps) {
   return (
@@ -23,9 +27,13 @@ export function FormInput({
       <input
         type={type}
         required={required}
-        className="relative block w-full h-12 rounded-md border border-gray-300 px-3 py-2text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none lg:text-base"
+        className={clsx(
+          "relative block w-full h-12 rounded-md border border-gray-300 px-3 py-2text-gray-900 placeholder-gray-500 focus:z-10 focus:border-primary focus:outline-none lg:text-base",
+          disabled && "bg-gray-200"
+        )}
         placeholder={placeholder}
         value={value}
+        disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
       />
     </div>

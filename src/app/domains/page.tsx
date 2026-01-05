@@ -71,7 +71,7 @@ export default function DomainPage() {
       header: "No.",
       className: "w-16 text-center", // 너비 고정
       render: (_: Domain, index: number) => (
-        <span className="text-gray-400 font-mono">
+        <span className="text-gray-400">
           {String(index + 1).padStart(2, "0")}
         </span>
       ),

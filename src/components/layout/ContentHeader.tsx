@@ -1,10 +1,11 @@
 "use client";
-import { User } from "@/types/auth";
+import { AuthUser } from "@/types/auth";
 import { usePathname } from "next/navigation";
 import { COMMON_NAV_ITEMS, ROLE_NAV_ITEMS } from "@/constants/navigation";
+import { USER_ROLE } from "@/constants/user";
 
 interface ContentHeaderProps {
-  user: User | null;
+  user: AuthUser | null;
 }
 
 export default function ContentHeader({ user }: ContentHeaderProps) {
@@ -29,8 +30,8 @@ export default function ContentHeader({ user }: ContentHeaderProps) {
         </div>
         <div>
           <div className="text-sm font-medium text-gray-700">{user?.name}</div>
-          <div className="text-[10px] text-gray-400 font-mono tracking-tighter uppercase">
-            {user?.role}
+          <div className="text-[11px] text-gray-500 uppercase">
+            {user ? <span>{USER_ROLE[user.role].label}</span> : "-"}
           </div>
         </div>
       </div>

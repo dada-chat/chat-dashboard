@@ -1,11 +1,11 @@
 "use client";
-import { User } from "@/types/auth";
+import { AuthUser } from "@/types/auth";
 import { usePathname } from "next/navigation";
 import { COMMON_NAV_ITEMS, ROLE_NAV_ITEMS } from "@/constants/navigation";
 import { USER_ROLE } from "@/constants/user";
 
 interface ContentHeaderProps {
-  user: User | null;
+  user: AuthUser | null;
 }
 
 export default function ContentHeader({ user }: ContentHeaderProps) {

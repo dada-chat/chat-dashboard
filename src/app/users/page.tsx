@@ -13,6 +13,7 @@ import { UserStatusBadge } from "@/components/ui/UserStatus";
 import clsx from "clsx";
 import { USER_ROLE } from "@/constants/user";
 import { PencilLine } from "lucide-react";
+import { ModalFormUser } from "@/components/ui/ModalFormUser";
 
 export default function DomainPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -21,7 +22,9 @@ export default function DomainPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const openModal = () => setIsModalOpen(true);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const closeModal = () => setIsModalOpen(false);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
 
   const fetchOurUsers = async () => {
     try {
@@ -30,7 +33,7 @@ export default function DomainPage() {
         setUsers(response.data);
       }
     } catch (error) {
-      console.error("사 로드 실패:", error);
+      console.error("사용자 목록 로드 실패:", error);
     } finally {
       setIsLoading(false);
     }
@@ -45,13 +48,25 @@ export default function DomainPage() {
 
     if (result.success) {
       alert("선택하신 계정이 활성화되었습니다.");
-      // 💡 목록 새로고침 (예: mutate 또는 fetch 다시 실행)
       fetchOurUsers();
     } else {
       alert(
         result.message || "계정을 활성화 하는 과정에서 오류가 발생했습니다."
       );
     }
+  };
+
+  const handleCreateClick = () => {
+    setModalMode("create");
+    setSelectedUser(undefined);
+    setIsModalOpen(true);
+  };
+
+  // 수정 버튼 클릭 시 (테이블 내부 버튼)
+  const handleEditClick = (user: User) => {
+    setModalMode("edit");
+    setSelectedUser(user);
+    setIsModalOpen(true);
   };
 
   if (isLoading) return <div>로딩 중...</div>;
@@ -66,7 +81,7 @@ export default function DomainPage() {
           <Button
             variant="none"
             className="!px-1 !w-auto hover:text-primary"
-            onClick={openModal}
+            onClick={() => handleEditClick(row)}
           >
             <PencilLine className="w-4 h-4" />
           </Button>
@@ -157,9 +172,11 @@ export default function DomainPage() {
     <DashboardLayout>
       <div className="flex flex-col gap-4 px-6">
         <div>
-          <Button size="md" className="!w-auto" onClick={openModal}>
-            사용자 추가
-          </Button>
+          {user?.role === "ADMIN" && (
+            <Button size="md" className="!w-auto" onClick={handleCreateClick}>
+              사용자 추가
+            </Button>
+          )}
         </div>
         {users.length > 0 ? (
           <Table columns={columns} data={users} rowKey={(row) => row.id} />
@@ -167,7 +184,19 @@ export default function DomainPage() {
           <NodataArea />
         )}
       </div>
-      {isModalOpen && <span>모달 영역</span>}
+      {isModalOpen && (
+        <ModalFormUser
+          user={user}
+          isOpen={isModalOpen}
+          mode={modalMode}
+          targetUser={selectedUser}
+          onClose={closeModal}
+          onSuccess={() => {
+            fetchOurUsers();
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </DashboardLayout>
   );
 }

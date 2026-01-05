@@ -21,3 +21,21 @@ export interface UserResponse {
   data: User[];
   message?: string;
 }
+
+export interface UserBasePayload {
+  name: string;
+  role: UserRole;
+  status: UserStatus;
+  organizationId?: string;
+}
+
+export interface CreateUserPayload extends UserBasePayload {
+  email: string;
+  password: string;
+}
+
+export interface SingleUserResponse {
+  success: boolean;
+  data: User;
+  message?: string;
+}

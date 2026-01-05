@@ -51,7 +51,7 @@ export default function DomainPage() {
       fetchOurUsers();
     } else {
       alert(
-        result.message || "계정을 활성화 하는 과정에서 오류가 발생했습니다."
+        result.message || "계정을 활성화하는 과정에서 오류가 발생했습니다."
       );
     }
   };

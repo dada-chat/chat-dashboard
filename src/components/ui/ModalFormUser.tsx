@@ -8,7 +8,7 @@ import { Button } from "./Button";
 import { User, UserStatus } from "@/types/user";
 import { SelectorRole } from "./SelectorRole";
 import { SelectorUserStatus } from "./SelectorUserStatus";
-import { createUser } from "@/lib/user";
+import { createUser, updateUser } from "@/lib/user";
 
 interface ModalFormUserProps {
   user: AuthUser;
@@ -50,21 +50,27 @@ export function ModalFormUser({
     setIsLoading(true);
 
     try {
-      const payload = {
-        email,
-        name,
-        role,
-        password,
-        status,
-        organizationId: isAdmin ? organizationId : user.organizationId!,
-      };
-
       if (mode === "create") {
+        const payload = {
+          email,
+          name,
+          role,
+          password,
+          status,
+          organizationId: isAdmin ? organizationId : user.organizationId!,
+        };
         await createUser(payload);
       } else {
+        const payload = {
+          name,
+          role,
+          status,
+          organizationId: organizationId || user.organizationId!,
+        };
         if (!targetUser) {
           throw new Error("수정 대상 유저가 없습니다.");
         }
+        await updateUser(targetUser.id, payload);
       }
 
       onSuccess();
@@ -80,6 +86,7 @@ export function ModalFormUser({
   };
 
   useEffect(() => {
+    console.log("targetUser", targetUser);
     if (isOpen) {
       if (mode === "edit" && targetUser) {
         setEmail(targetUser.email);

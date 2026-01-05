@@ -22,20 +22,24 @@ export interface UserResponse {
   message?: string;
 }
 
-export interface UserBasePayload {
+export interface CreateUserPayload {
+  email: string;
+  password: string;
   name: string;
   role: UserRole;
   status: UserStatus;
   organizationId?: string;
 }
 
-export interface CreateUserPayload extends UserBasePayload {
-  email: string;
-  password: string;
+export interface UpdateUserPayload {
+  name?: string;
+  role?: UserRole;
+  status?: UserStatus;
+  organizationId?: string;
 }
 
 export interface SingleUserResponse {
   success: boolean;
-  data: User;
+  data: User | null;
   message?: string;
 }

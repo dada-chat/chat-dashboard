@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "./Button";
@@ -6,6 +6,7 @@ import { Button } from "./Button";
 interface Option<T> {
   value: T;
   label: string;
+  disabled?: boolean;
 }
 
 interface SelectorProps<T extends string> {
@@ -24,14 +25,32 @@ export function Selector<T extends string>({
   const [open, setOpen] = useState(false);
   const current = options.find((o) => o.value === value);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative">
+    <div ref={containerRef} className="relative">
       {/* Trigger */}
       <Button
         type="button"
         variant="line"
         onClick={() => setOpen((v) => !v)}
         className={clsx("!justify-between", open && "!border-gray-600")}
+        disabled={disabled}
       >
         <span className="flex items-center gap-2">{current?.label}</span>
         <ChevronDown className="w-4 h-4" />

@@ -78,13 +78,15 @@ export default function DomainPage() {
       render: (row: User) => (
         <div className="flex items-center gap-2">
           <span className="text-gray-800 font-semibold">{row.email}</span>
-          <Button
-            variant="none"
-            className="!px-1 !w-auto hover:text-primary"
-            onClick={() => handleEditClick(row)}
-          >
-            <PencilLine className="w-4 h-4" />
-          </Button>
+          {(user?.role === "AGENT" || user?.role === "ADMIN") && (
+            <Button
+              variant="none"
+              className="!px-1 !w-auto hover:text-primary"
+              onClick={() => handleEditClick(row)}
+            >
+              <PencilLine className="w-4 h-4" />
+            </Button>
+          )}
         </div>
       ),
     },

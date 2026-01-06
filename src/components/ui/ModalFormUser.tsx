@@ -123,8 +123,9 @@ export function ModalFormUser({
                 disabled={isAdmin ? false : true}
               />
 
-              <p className="text-sm text-gray-400">
-                organizationId를 이용해서 특정 조직의 사용자를 추가할 수 있어요.
+              <p className="text-xs text-gray-400">
+                *organizationId를 이용해서 특정 조직의 사용자를 추가할 수
+                있습니다.
               </p>
             </div>
           )}
@@ -154,6 +155,8 @@ export function ModalFormUser({
             value={role}
             onChange={setRole}
             selectName="사용자 권한"
+            currentUserRole={user.role}
+            targetUserRole={targetUser?.role}
           />
           <SelectorUserStatus
             value={status}

@@ -4,6 +4,7 @@ import {
   SingleUserResponse,
   User,
   CreateUserPayload,
+  UpdateUserPayload,
 } from "@/types/user";
 
 // 조직의 사용자만 조회,
@@ -35,19 +36,35 @@ export const approveUserStatus = async (userId: string) => {
 export const createUser = async (
   data: CreateUserPayload
 ): Promise<SingleUserResponse> => {
-  console.log("📤 createUser payload:", data);
   try {
     const response = await api.post<SingleUserResponse>("/users", data);
     return response.data;
-  } catch (error: any) {
-    if (error.response) {
-      console.error("서버 응답 에러 데이터:", error.response.data);
-      console.error("상태 코드:", error.response.status);
-    }
+  } catch (error) {
+    console.error("사용자 계정 생성(createUser) error:", error);
     return {
       success: false,
       message: "사용자 추가 과정에서 오류가 발생했습니다.",
-      data: {} as User,
+      data: null,
+    };
+  }
+};
+
+export const updateUser = async (
+  userId: string,
+  data: UpdateUserPayload
+): Promise<SingleUserResponse> => {
+  try {
+    const response = await api.patch<SingleUserResponse>(
+      `/users/${userId}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("사용자 정보 수정(updateUser) error:", error);
+    return {
+      success: false,
+      message: "사용자 정보 수정 중에 오류가 발생했습니다.",
+      data: null,
     };
   }
 };

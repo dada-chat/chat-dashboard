@@ -25,7 +25,7 @@ const baseStyle =
 const variantStyle: Record<ButtonVariant, string> = {
   primary: "bg-primary text-white hover:bg-primary-dark",
   secondary: "bg-secondary text-gray-900 hover:bg-gray-200",
-  disabled: "bg-gray-100 text-gray-500 hover:bg-gray-200",
+  disabled: "!bg-gray-200 text-gray-400",
   danger: "bg-red-600 text-white hover:bg-red-700",
   line: "bg-white border border-gray-300 text-gray-600 hover:bg-gray-50",
   linePrimary:
@@ -58,7 +58,7 @@ export function Button({
         baseStyle,
         sizeStyle[size],
         variantStyle[variant],
-        isDisabled ? "cursor-not-allowed" : "cursor-pointer",
+        isDisabled ? "cursor-not-allowed !bg-gray-200" : "cursor-pointer",
         className
       )}
       {...props}

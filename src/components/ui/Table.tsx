@@ -3,26 +3,26 @@ import { Domain } from "@/types/domain";
 import { User } from "@/types/user";
 
 // Column 정의
-interface Column {
+interface Column<T> {
   header: string;
-  render: (row: Domain | User, index: number) => React.ReactNode;
+  render: (row: T, index: number) => React.ReactNode;
   className?: string;
 }
 
-interface TableProps {
-  columns: Column[];
-  data: Domain[] | User[];
-  rowKey?: (row: Domain | User) => string | number;
+interface TableProps<T> {
+  columns: Column<T>[];
+  data: T[];
+  rowKey?: (row: T) => string | number;
   tableClassName?: string;
 }
 
 // Table 컴포넌트
-export function Table({
+export function Table<T>({
   columns,
   data,
   rowKey,
   tableClassName = "w-full text-sm text-left text-gray-500",
-}: TableProps) {
+}: TableProps<T>) {
   return (
     <table className={tableClassName}>
       <TableHeader columns={columns} />
@@ -32,7 +32,11 @@ export function Table({
 }
 
 // Header 컴포넌트
-function TableHeader({ columns }: { columns: Column[] }) {
+function TableHeader({
+  columns,
+}: {
+  columns: { header: string; className?: string }[];
+}) {
   return (
     <thead className="text-sm text-gray-700 uppercase bg-gray-100">
       <tr>
@@ -50,14 +54,14 @@ function TableHeader({ columns }: { columns: Column[] }) {
 }
 
 // Body 컴포넌트
-function TableBody({
+function TableBody<T>({
   columns,
   data,
   rowKey,
 }: {
-  columns: Column[];
-  data: Domain[] | User[];
-  rowKey?: (row: Domain | User) => string | number;
+  columns: Column<T>[];
+  data: T[];
+  rowKey?: (row: T) => string | number;
 }) {
   return (
     <tbody>

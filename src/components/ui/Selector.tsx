@@ -11,6 +11,7 @@ interface Option<T> {
 
 interface SelectorProps<T extends string> {
   value: T;
+  size: "sm" | "md" | "lg";
   options: Option<T>[];
   onChange: (newValue: T) => void;
   disabled?: boolean;
@@ -18,6 +19,7 @@ interface SelectorProps<T extends string> {
 
 export function Selector<T extends string>({
   value,
+  size = "lg",
   options,
   onChange,
   disabled,
@@ -48,6 +50,7 @@ export function Selector<T extends string>({
       <Button
         type="button"
         variant="line"
+        size={size}
         onClick={() => setOpen((v) => !v)}
         className={clsx("!justify-between", open && "!border-gray-600")}
         disabled={disabled}
@@ -64,6 +67,7 @@ export function Selector<T extends string>({
               <Button
                 type="button"
                 variant="none"
+                size={size}
                 onClick={() => {
                   onChange(option.value);
                   setOpen(false);

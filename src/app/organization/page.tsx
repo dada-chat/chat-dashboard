@@ -145,7 +145,7 @@ export default function DomainPage() {
     },
   ];
 
-  const adminColumn = {
+  const actionColumn = {
     header: "소속(회사)",
     className: "w-32",
     render: (row: User) => (
@@ -166,7 +166,7 @@ export default function DomainPage() {
   };
 
   const columns =
-    user?.role === "ADMIN" ? [adminColumn, ...baseColumns] : baseColumns;
+    user?.role === "ADMIN" ? [actionColumn, ...baseColumns] : baseColumns;
 
   if (!user) return null;
 

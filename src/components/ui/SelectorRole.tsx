@@ -25,6 +25,9 @@ export function SelectorRole({
   targetUserRole,
 }: UserRoleSelectProps) {
   let isDisabled = false;
+  if (currentUserRole) {
+    isDisabled = currentUserRole !== "ADMIN";
+  }
   if (currentUserRole && targetUserRole) {
     isDisabled = currentUserRole !== "ADMIN" && targetUserRole === "ADMIN";
   }
@@ -45,7 +48,9 @@ export function SelectorRole({
 
       {isDisabled && (
         <p className="text-xs text-gray-400">
-          *최고관리자의 권한은 변경할 수 없습니다.
+          {targetUserRole
+            ? "*최고관리자의 권한은 변경할 수 없습니다."
+            : "*기본적으로 매니저 권한을 부여하고 있습니다."}
         </p>
       )}
     </div>

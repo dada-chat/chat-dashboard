@@ -173,7 +173,7 @@ export default function DomainPage() {
       <div className="flex flex-col gap-4 px-6">
         <div className="flex justify-between items-center">
           <div>
-            {user?.role === "ADMIN" && (
+            {(user?.role === "ADMIN" || user?.role === "AGENT") && (
               <Button size="md" className="!w-auto" onClick={handleCreateClick}>
                 초대장 보내기
               </Button>

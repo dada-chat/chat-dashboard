@@ -11,7 +11,7 @@ interface Option<T> {
 
 interface SelectorProps<T extends string> {
   value: T;
-  size: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg";
   options: Option<T>[];
   onChange: (newValue: T) => void;
   disabled?: boolean;

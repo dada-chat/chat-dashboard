@@ -25,3 +25,22 @@ export const getInvitations = async (
     };
   }
 };
+
+export const createInvitation = async (
+  data: CreateInvitation
+): Promise<SingleInvitationResponse> => {
+  try {
+    const response = await api.post<SingleInvitationResponse>(
+      "/invitations",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("초대 생성(createInvitation) error:", error);
+    return {
+      success: false,
+      message: "초대하는 과정에서 오류가 발생했습니다.",
+      data: null,
+    };
+  }
+};

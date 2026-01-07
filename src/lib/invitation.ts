@@ -1,4 +1,4 @@
-import api from "./axios";
+import api, { isAxiosError } from "./axios";
 import {
   InvitationResponse,
   CreateInvitation,
@@ -41,6 +41,33 @@ export const createInvitation = async (
       success: false,
       message: "초대하는 과정에서 오류가 발생했습니다.",
       data: null,
+    };
+  }
+};
+
+export const getInvitationById = async (
+  invitationId: string
+): Promise<SingleInvitationResponse> => {
+  try {
+    const response = await api.get<SingleInvitationResponse>(
+      `/invitations/${invitationId}`
+    );
+    return response.data;
+  } catch (error) {
+    if (isAxiosError(error)) {
+      const serverMessage = error.response?.data?.message;
+      console.error("서버 에러 발생:", serverMessage);
+
+      return {
+        success: false,
+        data: null,
+        message: serverMessage || "유효하지 않은 초대 링크입니다.",
+      };
+    }
+    return {
+      success: false,
+      data: null,
+      message: "시스템 오류가 발생했습니다.",
     };
   }
 };

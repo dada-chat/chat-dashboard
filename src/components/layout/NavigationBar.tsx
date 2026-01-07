@@ -9,7 +9,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import { SignoutButton } from "../ui/SignoutButton";
-import { COMMON_NAV_ITEMS, ROLE_NAV_ITEMS } from "@/constants/navigation";
+import { COMMON_NAV_ITEMS } from "@/constants/navigation";
 import { MenuItem } from "./MenuItem";
 
 export default function NavigationBar() {
@@ -19,10 +19,6 @@ export default function NavigationBar() {
   let userRole;
   if (user) userRole = user?.role;
 
-  // 관리자 메뉴 중 현재 사용자의 role이 허용된 것만 필터링
-  const filteredAdminItems = ROLE_NAV_ITEMS.filter(
-    (item) => user?.role && item.roles?.includes(user.role)
-  );
   return (
     <aside
       className={clsx(
@@ -77,18 +73,6 @@ export default function NavigationBar() {
             />
           ))}
         </ul>
-        {/* {filteredAdminItems.length > 0 && (
-          <ul className="border-t border-gray-300 pt-2 flex flex-col gap-2">
-            {filteredAdminItems.map((item) => (
-              <MenuItem
-                key={item.name}
-                item={item}
-                isActive={pathname.startsWith(item.href)}
-                isSidebarExpanded={isSidebarExpanded}
-              />
-            ))}
-          </ul>
-        )} */}
       </nav>
 
       {/* 하단 유저/토글 영역 */}

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { createDomain } from "@/lib/domain";
-import { User } from "@/types/auth";
+import { AuthUser } from "@/types/auth";
 import { Modal } from "./Modal";
 import { FormInput } from "./FormInput";
 import { Button } from "./Button";
 
 interface ModalFormDomainProps {
-  user: User;
+  user: AuthUser;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;

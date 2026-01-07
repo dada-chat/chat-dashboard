@@ -9,6 +9,8 @@ const api = axios.create({
   withCredentials: true,
 });
 
+export const isAxiosError = axios.isAxiosError;
+
 // 1. 요청 인터셉터: 모든 요청에 Access Token 추가 로직
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
@@ -45,6 +47,7 @@ api.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     }
+
     return Promise.reject(error);
   }
 );

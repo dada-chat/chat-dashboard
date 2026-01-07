@@ -1,4 +1,4 @@
-import api from "./axios";
+import api, { isAxiosError } from "./axios";
 import {
   InvitationResponse,
   CreateInvitation,
@@ -54,11 +54,20 @@ export const getInvitationById = async (
     );
     return response.data;
   } catch (error) {
-    console.error("초대 정보 단건 조회(getInvitation) error:", error);
+    if (isAxiosError(error)) {
+      const serverMessage = error.response?.data?.message;
+      console.error("서버 에러 발생:", serverMessage);
+
+      return {
+        success: false,
+        data: null,
+        message: serverMessage || "유효하지 않은 초대 링크입니다.",
+      };
+    }
     return {
       success: false,
       data: null,
-      message: "유효하지 않은 초대 링크입니다.",
+      message: "시스템 오류가 발생했습니다.",
     };
   }
 };

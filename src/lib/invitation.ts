@@ -44,3 +44,21 @@ export const createInvitation = async (
     };
   }
 };
+
+export const getInvitationById = async (
+  invitationId: string
+): Promise<SingleInvitationResponse> => {
+  try {
+    const response = await api.get<SingleInvitationResponse>(
+      `/invitations/${invitationId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("초대 정보 단건 조회(getInvitation) error:", error);
+    return {
+      success: false,
+      data: null,
+      message: "유효하지 않은 초대 링크입니다.",
+    };
+  }
+};

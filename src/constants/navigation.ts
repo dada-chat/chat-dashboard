@@ -16,12 +16,9 @@ export const NAVIGATION = {
   HOME: "/",
   CHAT: "/chat",
   USERS: "/users",
-  USERSAll: "/users/all",
   DOMAINS: "/domains",
-  DOMAINSAll: "/domains/all",
-  INVITATION: "/invitation",
-  ORG: "/organization",
-  ORGAll: "/organization/all",
+  INVITATION: "/invitations",
+  ORG: "/organizations",
 } as const;
 
 export interface NavItem {
@@ -38,26 +35,4 @@ export const COMMON_NAV_ITEMS: NavItem[] = [
   { name: "구성원", href: NAVIGATION.USERS, icon: UserCheck },
   { name: "초대 현황", href: NAVIGATION.INVITATION, icon: AtSign },
   { name: "회사 정보", href: NAVIGATION.ORG, icon: Building },
-];
-
-// 관리자 메뉴: 특정 권한만
-export const ROLE_NAV_ITEMS: NavItem[] = [
-  {
-    name: "전체 도메인",
-    href: NAVIGATION.DOMAINS,
-    icon: Server,
-    roles: ["ADMIN"],
-  },
-  {
-    name: "전체 사용자",
-    href: NAVIGATION.USERSAll,
-    icon: Users,
-    roles: ["ADMIN"],
-  },
-  {
-    name: "전체 회사",
-    href: NAVIGATION.ORGAll,
-    icon: Building2,
-    roles: ["ADMIN"],
-  },
 ];

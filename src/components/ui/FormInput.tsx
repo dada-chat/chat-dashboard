@@ -7,7 +7,7 @@ interface FormInputProps {
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   error?: string;
   helper?: string;
@@ -38,7 +38,7 @@ export function FormInput({
         placeholder={placeholder}
         value={value}
         disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange?.(e.target.value)}
         onBlur={onBlur}
       />
       {error && <p className="text-xs text-red-500">{error}</p>}

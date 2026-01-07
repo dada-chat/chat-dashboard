@@ -1,7 +1,7 @@
 "use client";
 import { AuthUser } from "@/types/auth";
 import { usePathname } from "next/navigation";
-import { COMMON_NAV_ITEMS, ROLE_NAV_ITEMS } from "@/constants/navigation";
+import { COMMON_NAV_ITEMS } from "@/constants/navigation";
 import { USER_ROLE } from "@/constants/user";
 
 interface ContentHeaderProps {
@@ -11,10 +11,10 @@ interface ContentHeaderProps {
 export default function ContentHeader({ user }: ContentHeaderProps) {
   const pathname = usePathname();
 
-  // 모든 메뉴 합치기
-  const allMenus = [...COMMON_NAV_ITEMS, ...ROLE_NAV_ITEMS];
   // 현재 경로에 맞는 메뉴명 찾기
-  const currentMenu = allMenus.find((item) => pathname.startsWith(item.href));
+  const currentMenu = COMMON_NAV_ITEMS.find((item) =>
+    pathname.startsWith(item.href)
+  );
 
   return (
     <header className="flex items-center justify-between px-6 h-16 bg-white">

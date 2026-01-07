@@ -15,7 +15,7 @@ import { USER_ROLE } from "@/constants/user";
 import { PencilLine } from "lucide-react";
 import { ModalFormUser } from "@/components/ui/ModalFormUser";
 
-export default function DomainPage() {
+export default function UserListPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuthStore();
@@ -81,6 +81,7 @@ export default function DomainPage() {
           {(user?.role === "AGENT" || user?.role === "ADMIN") && (
             <Button
               variant="none"
+              size="sm"
               className="!px-1 !w-auto hover:text-primary"
               onClick={() => handleEditClick(row)}
             >

@@ -1,7 +1,9 @@
 "use client";
 
-import clsx from "clsx";
+import { getChattingList } from "@/lib/chatting";
 import { ChatListItem } from "./ChatListItem";
+import { ChattingListItem } from "@/types/chatting";
+import { useEffect, useState } from "react";
 
 interface ChatListProps {
   selectedId: string | null;
@@ -9,29 +11,26 @@ interface ChatListProps {
 }
 
 export default function ChatList({ selectedId, onRoomSelect }: ChatListProps) {
-  const dummyRooms = [
-    {
-      id: "1",
-      name: "김철수",
-      lastMsg: "결제 오류가 발생했어요.",
-      time: "14:20",
-      status: "ongoing",
-    },
-    {
-      id: "2",
-      name: "이영희",
-      lastMsg: "감사합니다!",
-      time: "13:05",
-      status: "ongoing",
-    },
-    {
-      id: "3",
-      name: "박지성",
-      lastMsg: "도메인 연결은 어떻게 하나요?",
-      time: "12:50",
-      status: "waiting",
-    },
-  ];
+  const [ChattingList, setChattingList] = useState<ChattingListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchChattingList = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getChattingList();
+      if (response.success) {
+        setChattingList(response.data);
+      }
+    } catch (error) {
+      console.error("채팅 목록 로드 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchChattingList();
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-white border border-gray-300 rounded-lg">
@@ -39,11 +38,11 @@ export default function ChatList({ selectedId, onRoomSelect }: ChatListProps) {
         <h2 className="text-sm font-semibold text-gray-600">채팅방 목록</h2>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {dummyRooms.map((room) => (
+        {ChattingList.map((item) => (
           <ChatListItem
-            key={room.id}
-            {...room}
-            isSelected={selectedId === room.id}
+            key={item.id}
+            data={item}
+            isSelected={selectedId === item.id}
             onClick={onRoomSelect}
           />
         ))}

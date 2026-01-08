@@ -19,7 +19,7 @@ export default function ChatWindow({ roomId }: { roomId: string }) {
             <span className="text-gray-800 font-semibold">{roomId}</span>
           </p>
           <span className="rounded-2xl py-1 px-2.5 font-semibold text-xs text-primary bg-primary-lightest">
-            상담 진행 중
+            상담 가능
           </span>
         </div>
         <div>

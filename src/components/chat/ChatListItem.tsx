@@ -1,27 +1,19 @@
 "use client";
 
+import { ChattingListItem } from "@/types/chatting";
+import { formatChatDate } from "@/utils/date";
 import clsx from "clsx";
 
 interface ChatListItemProps {
-  id: string;
-  name: string;
-  lastMsg: string;
-  time: string;
+  data: ChattingListItem;
   isSelected: boolean;
   onClick: (id: string) => void;
 }
 
-export function ChatListItem({
-  id,
-  name,
-  lastMsg,
-  time,
-  isSelected,
-  onClick,
-}: ChatListItemProps) {
+export function ChatListItem({ data, isSelected, onClick }: ChatListItemProps) {
   return (
     <div
-      onClick={() => onClick(id)}
+      onClick={() => onClick(data.id)}
       className={clsx(
         "py-4 px-6 border-b border-gray-300 cursor-pointer transition-colors hover:bg-gray-100",
         isSelected
@@ -30,11 +22,20 @@ export function ChatListItem({
       )}
     >
       <div className="flex justify-between items-start mb-1">
-        <span className="font-semibold text-gray-900">{name}</span>
-        <span className="text-xs text-gray-400">{time}</span>
+        <span className="font-semibold text-gray-900">{data.visitorName}</span>
+        <span className="text-xs text-gray-400">
+          {formatChatDate(data.lastMessageAt)}
+        </span>
       </div>
       <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-500 truncate w-48">{lastMsg}</p>
+        <p className="text-sm text-gray-500 truncate w-10/12">
+          {data.lastMessage}
+        </p>
+        {data.unreadCount > 0 && (
+          <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+            {data.unreadCount}
+          </span>
+        )}
       </div>
     </div>
   );

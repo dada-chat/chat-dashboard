@@ -26,26 +26,35 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    if (originalRequest.url === "/auth/refresh") {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const res = await axios.post(
-          `${api.defaults.baseURL}/auth/refresh`,
-          {},
-          { withCredentials: true }
-        );
+      if (error.response.data?.code === "TOKEN_EXPIRED") {
+        originalRequest._retry = true;
+        try {
+          const res = await axios.post(
+            `${api.defaults.baseURL}/auth/refresh`,
+            {},
+            { withCredentials: true }
+          );
 
-        const { accessToken } = res.data;
-        useAuthStore.getState().setAccessToken(accessToken); // 새 토큰 저장
+          const { accessToken } = res.data;
+          useAuthStore.getState().setAccessToken(accessToken); // 새 토큰 저장
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return api(originalRequest); // 실패했던 요청 재시도
-      } catch (refreshError) {
-        await signout();
-        broadcastSignout();
-        window.location.href = NAVIGATION.SIGNIN;
-        return Promise.reject(refreshError);
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return api(originalRequest); // 실패했던 요청 재시도
+        } catch (refreshError) {
+          await handleForceSignout();
+          return Promise.reject(refreshError);
+        }
       }
+      await handleForceSignout();
+    }
+
+    if (error.response?.status === 403) {
+      await handleForceSignout();
     }
 
     return Promise.reject(error);
@@ -53,3 +62,10 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+// 공통 로그아웃 처리 함수
+async function handleForceSignout() {
+  await signout();
+  broadcastSignout();
+  window.location.href = NAVIGATION.SIGNIN;
+}

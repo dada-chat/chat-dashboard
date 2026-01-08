@@ -2,22 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import api from "@/lib/axios";
 import { useAuthStore } from "@/store/authStore";
 import { FormInput } from "@/components/ui/FormInput";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
-import { SignInResponse } from "@/types/auth";
 import { NAVIGATION } from "@/constants/navigation";
 import { getInvitationById } from "@/lib/invitation";
-import { Modal } from "@/components/ui/Modal";
-import { Alert } from "@/components/ui/Alert";
+import { Alert, AlertIconType } from "@/components/ui/Alert";
+import { signUpAsAgentWithOrganization, signUpByInvitation } from "@/lib/auth";
+import { UserRole } from "@/types/auth";
+import { USER_ROLE } from "@/constants/user";
 
 export default function SignUpPage() {
   const searchParams = useSearchParams();
   const invitationId = searchParams.get("invitationId");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState<UserRole>("MANAGER");
   const [organizationId, setOrganizationId] = useState("");
   const [organizationName, setOrganizationName] = useState("");
   const [password, setPassword] = useState("");
@@ -26,10 +27,12 @@ export default function SignUpPage() {
   const [passwordConfirmTouched, setPasswordConfirmTouched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [systemMessage, setSystemMessage] = useState("");
+  const [systemMessageIcon, setSystemMessageIcon] =
+    useState<AlertIconType>("info");
 
   const router = useRouter();
-  const { accessToken, user, setAuth } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
 
   //  로그인 정보 확인
   useEffect(() => {
@@ -49,13 +52,17 @@ export default function SignUpPage() {
         const response = await getInvitationById(invitationId);
 
         if (!response.success) {
-          setErrorMessage(response.message || "유효하지 않은 초대 링크입니다.");
+          setSystemMessageIcon("warning");
+          setSystemMessage(
+            response.message || "유효하지 않은 초대 링크입니다."
+          );
           return;
         }
 
         if (response.success && response.data) {
           setEmail(response.data?.email);
           setName(response.data?.name);
+          setRole(response.data?.role);
           setOrganizationId(response.data?.organizationId);
           setOrganizationName(response.data?.organization?.name || "");
         }
@@ -103,7 +110,57 @@ export default function SignUpPage() {
     }
 
     try {
-      //회원가입
+      if (!invitationId) {
+        // 일반 회원가입
+        const payload = {
+          email,
+          password,
+          name,
+          organizationName,
+        };
+
+        const response = await signUpAsAgentWithOrganization(payload);
+
+        if (response.success) {
+          setSystemMessageIcon("success");
+          setSystemMessage(
+            "회원가입이 완료되었습니다.\n다다챗 관리자의 승인 이후 서비스 이용이 가능합니다."
+          );
+          router.push(NAVIGATION.SIGNIN);
+        } else {
+          setSystemMessageIcon("warning");
+          setSystemMessage(
+            response.message ||
+              "회원가입 중 오류가 발생했습니다.\n잠시 후 다시 시도해 보세요 :("
+          );
+        }
+      } else {
+        // 초대 회원가입
+        const payload = {
+          email,
+          password,
+          name,
+          role,
+          organizationId,
+          organizationName,
+          invitationId,
+        };
+
+        const response = await signUpByInvitation(payload);
+
+        if (response.success) {
+          setSystemMessageIcon("success");
+          setSystemMessage(
+            `${organizationName} 소속으로, 다다챗 회원가입이 완료되었습니다.\n로그인 후 다다챗을 이용해 보세요!`
+          );
+        } else {
+          setSystemMessageIcon("warning");
+          setSystemMessage(
+            response.message ||
+              "초대를 통한 회원가입 중 오류가 발생했습니다.\n잠시 후 다시 시도해 보세요 :("
+          );
+        }
+      }
     } catch (error) {
       console.error("회원가입 실패:", error);
     } finally {
@@ -128,12 +185,16 @@ export default function SignUpPage() {
             <p className="text-sm text-gray-500">
               {invitationId ? (
                 <>
+                  초대 메일을 통해&nbsp;
                   <span className="text-gray-700 font-bold">
                     {organizationName}
                   </span>
-                  에서 보낸 초대 메일을 통해,
+                  &nbsp;소속의
                   <br />
-                  매니저 권한으로 회원가입이 진행됩니다.
+                  <span className="text-gray-700 font-bold">
+                    {USER_ROLE[role].label}
+                  </span>
+                  &nbsp;권한으로 회원가입이 진행됩니다.
                 </>
               ) : (
                 <>
@@ -234,8 +295,14 @@ export default function SignUpPage() {
           </form>
         </div>
       </div>
-      {errorMessage && (
-        <Alert message={errorMessage} isOpen={true} nextPath="/" />
+      {systemMessage && (
+        <Alert
+          message={systemMessage}
+          isOpen={true}
+          iconType={systemMessageIcon}
+          nextPath="/"
+          buttonText={systemMessageIcon === "success" ? "로그인" : ""}
+        />
       )}
     </>
   );

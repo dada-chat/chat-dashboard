@@ -1,17 +1,13 @@
-"use client";
-
-import { useState } from "react";
-import { createDomain } from "@/lib/domain";
-import { AuthUser } from "@/types/auth";
 import { Modal } from "./Modal";
-import { FormInput } from "./FormInput";
 import { Button } from "./Button";
-import { CircleAlert, ShieldAlert } from "lucide-react";
+import { Info, CircleCheckBig, OctagonAlert } from "lucide-react";
 import Link from "next/link";
 
+export type AlertIconType = "info" | "success" | "warning";
 interface AlertProps {
   message: string;
   isOpen: boolean;
+  iconType?: AlertIconType;
   buttonText?: string;
   nextPath?: string;
   onClose?: () => void;
@@ -20,6 +16,7 @@ interface AlertProps {
 export function Alert({
   message,
   isOpen,
+  iconType = "info",
   buttonText,
   nextPath,
   onClose,
@@ -27,8 +24,16 @@ export function Alert({
   return (
     <Modal isOpen={isOpen} onClose={onClose} variant="center">
       <div className="flex flex-col justify-center items-center gap-6 py-10">
-        <ShieldAlert className="text-red-600 w-12 h-12" />
-        <p className="text-gray-700">{message}</p>
+        {iconType === "info" && <Info className="text-gray-300 w-12 h-12" />}
+        {iconType === "success" && (
+          <CircleCheckBig className="text-green-600 w-12 h-12" />
+        )}
+        {iconType === "warning" && (
+          <OctagonAlert className="text-red-600 w-12 h-12" />
+        )}
+        <p className="text-center text-gray-700 whitespace-pre-wrap">
+          {message}
+        </p>
       </div>
       {nextPath && (
         <Link href={nextPath} className="flex w-full">

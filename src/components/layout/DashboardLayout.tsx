@@ -1,4 +1,5 @@
-// app/(dashboard)/layout.tsx
+"use client";
+
 import NavigationBar from "@/components/layout/NavigationBar";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import ContentHeader from "./ContentHeader";

@@ -4,15 +4,15 @@ import { getChattingList } from "@/lib/chatting";
 import { ChatListItem } from "./ChatListItem";
 import { ChattingListItem } from "@/types/chatting";
 import { useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
 
-interface ChatListProps {
-  selectedId: string | null;
-  onRoomSelect: (id: string) => void;
-}
-
-export default function ChatList({ selectedId, onRoomSelect }: ChatListProps) {
+export default function ChatList() {
   const [ChattingList, setChattingList] = useState<ChattingListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
+  const params = useParams();
+  const selectedId = params?.roomId as string;
 
   const fetchChattingList = async () => {
     try {
@@ -32,6 +32,10 @@ export default function ChatList({ selectedId, onRoomSelect }: ChatListProps) {
     fetchChattingList();
   }, []);
 
+  const handleRoomClick = (id: string) => {
+    router.push(`/chat/${id}`);
+  };
+
   return (
     <div className="flex flex-col h-full bg-white border border-gray-300 rounded-lg">
       <div className="p-6 border-b border-gray-300">
@@ -43,7 +47,7 @@ export default function ChatList({ selectedId, onRoomSelect }: ChatListProps) {
             key={item.id}
             data={item}
             isSelected={selectedId === item.id}
-            onClick={onRoomSelect}
+            onClick={() => handleRoomClick(item.id)}
           />
         ))}
       </div>

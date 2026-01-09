@@ -2,7 +2,7 @@
 
 import { User, Link, Calendar } from "lucide-react";
 
-export default function VisitorInfo({ roomId }: { roomId: string | null }) {
+export default function ChatMembersInfo({ roomId }: { roomId: string | null }) {
   if (!roomId) return null;
 
   return (

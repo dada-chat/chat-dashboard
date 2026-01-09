@@ -1,3 +1,4 @@
+import { UserRole } from "./auth";
 import { Domain } from "./domain";
 
 export type SenderType = "USER" | "VISITOR" | "SYSTEM";
@@ -34,6 +35,14 @@ export interface Visitor {
   createdAt: Date;
 }
 
+export interface AssignedUser {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  lastAnsweredAt?: Date;
+}
+
 export interface ChattingRoom {
   id: string;
   status: ChattingRoomStatus;
@@ -47,6 +56,14 @@ export interface ChattingRoom {
   visitor: Visitor;
   domain: Domain;
   messages: Message[];
+  assignedUser: AssignedUser;
+}
+
+export interface Visitor {
+  id: string;
+  email: string;
+  name: string;
+  createdAt: Date;
 }
 
 export interface ChattingRoomResponse {

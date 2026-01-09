@@ -43,7 +43,13 @@ export default function ChatRoomPage() {
         />
       </div>
       <div className="w-[320px] bg-white">
-        <ChatMembersInfo roomId={roomId} />
+        <ChatMembersInfo
+          roomId={roomId}
+          firstMessageAt={chattingRoom?.firstMessageAt ?? null}
+          visitor={chattingRoom?.visitor ?? null}
+          domain={chattingRoom?.domain ?? null}
+          assignedUser={chattingRoom?.assignedUser ?? null}
+        />
       </div>
     </>
   );

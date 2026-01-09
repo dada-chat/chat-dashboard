@@ -7,7 +7,7 @@ import { Button } from "../ui/Button";
 import { ChatMessage } from "./ChatMessage";
 import { ChattingRoomStatus, Message } from "@/types/chatting";
 import { formatChatDate } from "@/utils/date";
-import { sendNewMessage } from "@/lib/chatting";
+import { sendNewMessage, updateChattingRoomStatus } from "@/lib/chatting";
 
 interface ChatWindowProps {
   roomId: string;
@@ -62,13 +62,19 @@ export default function ChatWindow({
   // 채팅 상태
   const isChattingOpen = chattingRoomStatus === "OPEN";
 
+  const handleChattingRoomStatus = async (status: ChattingRoomStatus) => {
+    //if (!confirm("해당 채팅방의 상담을 종료할까요?")) return;
+    console.log("roomId, status", roomId);
+    const result = await updateChattingRoomStatus(roomId, status);
+  };
+
   return (
     <div className="flex flex-col h-full border border-gray-300 rounded-lg bg-white overflow-hidden">
       {/* 채팅창 헤더 */}
       <div className="py-4  px-6 border-b border-gray-300 bg-white flex items-center justify-between shadow-sm">
         <div className="flex flex-col gap-1 items-start">
           <p className="text-sm text-gray-600">
-            채팅방 ID:
+            채팅방 ID:&nbsp;
             <span className="text-gray-800 font-semibold">{roomId}</span>
           </p>
           {isChattingOpen ? (
@@ -84,9 +90,11 @@ export default function ChatWindow({
         {isChattingOpen && (
           <div>
             <Button
+              type="button"
               variant="none"
               size="md"
               className="text-xs !gap-1 hover:underline"
+              onClick={() => handleChattingRoomStatus("CLOSED")}
             >
               <MessageCircleX className="w-4 h-4" />
               <span>상담 종료</span>
@@ -125,7 +133,7 @@ export default function ChatWindow({
           <Button
             type="submit"
             className="!w-[48px] !px-0"
-            disabled={!isChattingOpen}
+            disabled={!isChattingOpen || isSending}
           >
             <Send className="w-6 h-6" />
           </Button>

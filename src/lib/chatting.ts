@@ -3,6 +3,7 @@ import {
   ChattingListResponse,
   ChattingRoomResponse,
   ChattingCommonResultResponse,
+  ChattingRoomStatus,
 } from "@/types/chatting";
 
 // 특정 조직에 대한 채팅 목록 조회
@@ -73,6 +74,28 @@ export const sendNewMessage = async (data: {
     return {
       success: false,
       message: "새로운 메세지 전송 과정에서 오류가 발생했습니다.",
+    };
+  }
+};
+
+export const updateChattingRoomStatus = async (
+  conversationId: string,
+  status: ChattingRoomStatus
+) => {
+  try {
+    const response = await api.patch<ChattingCommonResultResponse>(
+      `/chat/conversations/${conversationId}/status`,
+      { status }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "채팅방 상태 변경(updateChattingRoomStatus) 처리 error:",
+      error
+    );
+    return {
+      success: false,
+      message: "채팅방 상태 변경 과정에서 오류가 발생했습니다.",
     };
   }
 };

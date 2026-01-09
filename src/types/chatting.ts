@@ -54,7 +54,9 @@ export interface ChattingRoomResponse {
   data: ChattingRoom | null;
   message?: string;
 }
-export interface ChattingRoomStatusResponse {
+
+// 읽음 상태, 메세지 전송
+export interface ChattingCommonResultResponse {
   success: boolean;
   message?: string;
 }

@@ -36,7 +36,11 @@ export default function ChatRoomPage() {
   return (
     <>
       <div className="flex-1 flex flex-col">
-        <ChatWindow roomId={roomId} messages={chattingRoom?.messages ?? []} />
+        <ChatWindow
+          roomId={roomId}
+          messages={chattingRoom?.messages ?? []}
+          chattingRoomStatus={chattingRoom?.status ?? "OPEN"}
+        />
       </div>
       <div className="w-[320px] bg-white">
         <ChatMembersInfo roomId={roomId} />

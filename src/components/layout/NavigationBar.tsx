@@ -22,7 +22,7 @@ export default function NavigationBar() {
   return (
     <aside
       className={clsx(
-        "relative flex flex-col bg-gray-100 text-gray-600 transition-all border-r border-gray-200 duration-200 ease-in-out",
+        "relative flex flex-col bg-gray-100 text-gray-600 transition-all border-r border-gray-300 duration-200 ease-in-out",
         isSidebarExpanded ? "w-64" : "w-18"
       )}
     >

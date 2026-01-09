@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 interface FormInputProps {
-  label: string;
+  label?: string;
   type?: "text" | "email" | "password";
   value: string;
   placeholder?: string;
@@ -26,8 +26,10 @@ export function FormInput({
   helper,
 }: FormInputProps) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+    <div className="flex flex-col gap-1 w-full">
+      {label && (
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+      )}
       <input
         type={type}
         required={required}

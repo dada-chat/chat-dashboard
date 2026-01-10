@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
 import { Send, MessageCircleX } from "lucide-react";
 import { FormInput } from "../ui/FormInput";
 import { Button } from "../ui/Button";
@@ -8,6 +9,7 @@ import { ChatMessage } from "./ChatMessage";
 import { ChattingRoomStatus, Message } from "@/types/chatting";
 import { formatChatDate } from "@/utils/date";
 import { sendNewMessage, updateChattingRoomStatus } from "@/lib/chatting";
+import { SOCKET_URL } from "@/app/chat/layout";
 
 interface ChatWindowProps {
   roomId: string;
@@ -63,10 +65,41 @@ export default function ChatWindow({
   const isChattingOpen = chattingRoomStatus === "OPEN";
 
   const handleChattingRoomStatus = async (status: ChattingRoomStatus) => {
-    //if (!confirm("해당 채팅방의 상담을 종료할까요?")) return;
-    console.log("roomId, status", roomId);
-    const result = await updateChattingRoomStatus(roomId, status);
+    if (!confirm("해당 채팅방의 상담을 종료할까요?")) return;
+
+    const response = await updateChattingRoomStatus(roomId, status);
+
+    if (response.success) {
+      if (onMessageSent) onMessageSent();
+    }
   };
+
+  useEffect(() => {
+    if (!roomId) return;
+
+    const socket = io(SOCKET_URL, {
+      transports: ["websocket"],
+      withCredentials: false,
+    });
+
+    // 소켓 연결 확인
+    socket.on("connect", () => {
+      console.log(`[Window 소켓] ${roomId}번 방 입장 시도`);
+      socket.emit("join_chattingroom", roomId);
+    });
+
+    // 메시지 수신
+    socket.on("message_received", (newMessage) => {
+      console.log("새 메시지 수신:", newMessage);
+
+      // 메시지 목록 fetchChattingRoom 실행
+      if (onMessageSent) onMessageSent();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [roomId]);
 
   return (
     <div className="flex flex-col h-full border border-gray-300 rounded-lg bg-white overflow-hidden">

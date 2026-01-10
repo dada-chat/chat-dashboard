@@ -6,7 +6,11 @@ import { ChattingListItem } from "@/types/chatting";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 
-export default function ChatList() {
+export default function ChatList({
+  refreshTrigger,
+}: {
+  refreshTrigger?: number;
+}) {
   const [ChattingList, setChattingList] = useState<ChattingListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,8 +33,9 @@ export default function ChatList() {
   };
 
   useEffect(() => {
+    console.log("🔄 refreshTrigger 변경됨! 목록을 새로고침합니다.");
     fetchChattingList();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleRoomClick = (id: string) => {
     router.push(`/chat/${id}`);

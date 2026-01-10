@@ -40,6 +40,7 @@ export default function ChatRoomPage() {
           roomId={roomId}
           messages={chattingRoom?.messages ?? []}
           chattingRoomStatus={chattingRoom?.status ?? "OPEN"}
+          onMessageSent={fetchChattingRoom}
         />
       </div>
       <div className="w-[320px] bg-white">

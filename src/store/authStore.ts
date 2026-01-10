@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User } from "@/types/auth";
+import type { AuthUser } from "@/types/auth";
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   accessToken: string | null;
   hasHydrated: boolean;
-  setAuth: (user: User, access: string) => void;
+  setAuth: (user: AuthUser, access: string) => void;
   setAccessToken: (token: string) => void;
   signout: () => void;
 }

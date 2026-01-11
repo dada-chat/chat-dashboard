@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/Button";
 import { NAVIGATION } from "@/constants/navigation";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
+import { FileUser, MessagesSquare, FileUp } from "lucide-react";
 import Link from "next/link";
 
 export default function LandingPage() {
   const router = useRouter();
-  const { accessToken, user, setAuth } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
 
   //  사용자 정보 확인
   useEffect(() => {
@@ -52,8 +53,13 @@ export default function LandingPage() {
 
             {/* 메인 대시보드 이미지 */}
             <div className="rounded-2xl bg-white shadow-xl p-6">
-              <div className="h-[280px] w-full rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
-                대시보드 이미지 영역
+              <div className="relative w-full aspect-[16/9]">
+                <Image
+                  src="/images/landing/img_dashboard.png"
+                  alt="다다챗 대시보드"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>
@@ -117,18 +123,18 @@ export default function LandingPage() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl p-10 pb-2.5 bg-white shadow-lg"
+                  className="rounded-2xl p-10 pb-4 bg-white shadow-lg"
                 >
                   <div className="flex flex-col gap-1">
                     <h3 className="text-2xl font-semibold">{item.title}</h3>
-                    <p className="">{item.content}</p>
+                    <p className="text-gray-600">{item.content}</p>
                   </div>
                   <div className="flex justify-end">
                     <Image
                       src={`/images/landing/${item.img}`}
                       alt={item.title}
-                      width={320}
-                      height={320}
+                      width={240}
+                      height={240}
                     />
                   </div>
                 </div>
@@ -141,22 +147,49 @@ export default function LandingPage() {
         <section className="py-24">
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex flex-col gap-4 text-center">
-              <h2 className="text-3xl font-bold">앞으로 추가될 기능들</h2>
+              <h2 className="text-3xl font-bold">
+                앞으로 추가하면 좋을 기능들
+              </h2>
               <p className="text-lg text-gray-600">
-                서비스 구조를 고려해 점진적으로 확장할 계획입니다.
+                1차적으로 기본 기능을 구현한 후, 추가적으로 필요한 기능들을
+                정리했습니다.
               </p>
             </div>
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                "문의했던 고객 정보 조회",
-                "내부용 사내 메세지",
-                "채팅 파일 첨부",
-              ].map((text, i) => (
-                <div key={i} className="rounded-2xl bg-white p-6 shadow-sm">
-                  <div className="h-32 rounded-lg bg-gray-100 mb-4" />
-                  <p className="font-medium">{text}</p>
-                </div>
-              ))}
+                {
+                  icon: FileUser,
+                  title: "문의한 고객 데이터 조회",
+                  content:
+                    "문의한 고객 기록을 확인할 수 있는 페이지를 추가하고자 합니다.",
+                },
+                {
+                  icon: MessagesSquare,
+                  title: "내부용 사내 채팅",
+                  content:
+                    "대시보드에서 팀원들간의 1:1 채팅 기능을 추가하고자 합니다.",
+                },
+                {
+                  icon: FileUp,
+                  title: "채팅, 파일 업로드",
+                  content:
+                    "채팅 시, 텍스트 이외에 파일 업로드 기능을 추가하고자 합니다.",
+                },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={i}
+                    className="flex flex-col gap-4 rounded-2xl bg-gray-200 p-10 shadow-sm"
+                  >
+                    <Icon className="w-8 h-8 text-primary mb-4" />
+                    <div className="flex flex-col gap-1 ">
+                      <h3 className="text-2xl font-semibold">{item.title}</h3>
+                      <p className="text-gray-600">{item.content}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

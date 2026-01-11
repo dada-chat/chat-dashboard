@@ -148,7 +148,7 @@ export default function ChatWindow({
                 key={item.id}
                 content={item.content}
                 time={formatChatDate(item.createdAt)}
-                isUser={item.senderType === "USER"}
+                senderType={item.senderType}
               />
             );
           })}

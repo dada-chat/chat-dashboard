@@ -16,8 +16,9 @@ export function ChatListItem({ data, isSelected, onClick }: ChatListItemProps) {
       onClick={() => onClick(data.id)}
       className={clsx(
         "py-4 px-6 border-b border-gray-300 cursor-pointer transition-colors hover:bg-gray-100",
+        data.status === "CLOSED" && "!bg-gray-200",
         isSelected
-          ? "bg-primary-lightest border-l-4 border-l-primary"
+          ? "!bg-primary-lightest border-l-4 border-l-primary"
           : "bg-white"
       )}
     >

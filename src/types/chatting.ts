@@ -6,6 +6,7 @@ export type ChattingRoomStatus = "OPEN" | "CLOSED";
 
 export interface ChattingListItem {
   id: string;
+  status: ChattingRoomStatus;
   visitorName: string;
   lastMessage: string;
   lastMessageAt: Date;

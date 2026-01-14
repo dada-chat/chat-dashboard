@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import ChatList from "@/components/chat/ChatList";
 import { useAuthStore } from "@/store/authStore";
+import { useChatStore } from "@/store/chatStore";
 
 export const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
@@ -14,7 +15,7 @@ export default function ChatLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const { refreshTrigger, triggerRefresh } = useChatStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function ChatLayout({
     //  목록 업데이트 이벤트 수신
     socket.on("update_conversation_list", (data) => {
       console.log("목록 갱신 신호:", data);
-      setRefreshTrigger((prev) => prev + 1); // ChatList를 재호출
+      triggerRefresh(); // ChatList를 재호출
     });
 
     return () => {

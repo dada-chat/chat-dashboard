@@ -1,31 +1,40 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { Send, MessageCircleX } from "lucide-react";
 import { FormInput } from "../ui/FormInput";
 import { Button } from "../ui/Button";
 import { ChatMessage } from "./ChatMessage";
-import { ChattingRoomStatus, Message } from "@/types/chatting";
+import { ChattingRoom, ChattingRoomStatus, Message } from "@/types/chatting";
 import { formatChatDate } from "@/utils/date";
-import { sendNewMessage, updateChattingRoomStatus } from "@/lib/chatting";
+import {
+  getChattingRoom,
+  sendNewMessage,
+  updateChattingRoomStatus,
+} from "@/lib/chatting";
 import { SOCKET_URL } from "@/app/chat/layout";
+import { useChatStore } from "@/store/chatStore";
+import { flushSync } from "react-dom";
 
 interface ChatWindowProps {
   roomId: string;
-  messages: Message[] | null;
-  chattingRoomStatus: ChattingRoomStatus;
-  onMessageSent?: () => void;
+  onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
+  chatWindowRef: RefObject<HTMLDivElement | null>;
+  onMetadata: (data: ChattingRoom) => void;
 }
 
 export default function ChatWindow({
   roomId,
-  messages,
-  chattingRoomStatus,
-  onMessageSent,
+  onScroll,
+  chatWindowRef,
+  onMetadata,
 }: ChatWindowProps) {
   const [content, setContent] = useState("");
   const [isSending, setIsSending] = useState(false);
+
+  const { messages, status, addMessage, setStatus, triggerRefresh } =
+    useChatStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +46,17 @@ export default function ChatWindow({
         conversationId: roomId,
         content,
       });
-      if (!response.success) {
-        // 에러 메세지
+      if (response.success && response.data) {
+        const newMessage = response.data;
+        setContent("");
+        flushSync(() => {
+          addMessage(newMessage);
+        });
+        scrollToBottom("smooth");
+
+        const refesh = await getChattingRoom(roomId);
+        if (refesh.success && refesh.data) onMetadata(refesh.data);
       }
-      setContent("");
-      if (onMessageSent) onMessageSent();
     } catch (error) {
       console.error("메시지 전송 실패:", error);
       alert("메시지를 보내지 못했습니다.");
@@ -50,27 +65,44 @@ export default function ChatWindow({
     }
   };
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    if (chatWindowRef.current) {
+      chatWindowRef.current.scrollTo({
+        top: chatWindowRef.current.scrollHeight,
+        behavior,
+      });
+    }
+  };
+
+  const isInitialScroll = useRef(true);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (!chatWindowRef.current || !messages || messages.length === 0) return;
+
+    if (isInitialScroll.current) {
+      chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
+      isInitialScroll.current = false;
     }
   }, [messages]);
 
+  // 방이 바뀔 때 초기화
+  useEffect(() => {
+    isInitialScroll.current = true;
+  }, [roomId]);
+
   const hasMessages = messages && messages.length > 0;
-  const displayMessages = hasMessages ? [...messages].reverse() : [];
 
   // 채팅 상태
-  const isChattingOpen = chattingRoomStatus === "OPEN";
+  const isChattingOpen = status === "OPEN";
 
   const handleChattingRoomStatus = async (status: ChattingRoomStatus) => {
     if (!confirm("해당 채팅방의 상담을 종료할까요?")) return;
 
     const response = await updateChattingRoomStatus(roomId, status);
 
-    if (response.success) {
-      if (onMessageSent) onMessageSent();
+    if (response.success && response.data) {
+      setStatus(status);
+      triggerRefresh();
     }
   };
 
@@ -92,14 +124,18 @@ export default function ChatWindow({
     socket.on("message_received", (newMessage) => {
       console.log("새 메시지 수신:", newMessage);
 
-      // 메시지 목록 fetchChattingRoom 실행
-      if (onMessageSent) onMessageSent();
+      flushSync(() => {
+        addMessage(newMessage);
+      });
+
+      // 2. 메시지 추가 후 하단으로 스크롤
+      scrollToBottom("smooth");
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [roomId]);
+  }, [roomId, addMessage]);
 
   return (
     <div className="flex flex-col h-full border border-gray-300 rounded-lg bg-white overflow-hidden">
@@ -138,11 +174,13 @@ export default function ChatWindow({
 
       {/* 메시지 영역 */}
       <div
-        ref={scrollRef}
+        ref={chatWindowRef}
+        onScroll={onScroll}
+        style={{ overflowAnchor: "none" }}
         className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-100"
       >
         {hasMessages &&
-          displayMessages.map((item) => {
+          messages.map((item) => {
             return (
               <ChatMessage
                 key={item.id}

@@ -29,11 +29,14 @@ export const formatChatDate = (date: string | Date) => {
 
   // 오늘
   if (diffDays === 0) {
-    return target.toLocaleTimeString("ko-KR", {
+    const timeString = target.toLocaleTimeString("ko-KR", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
+
+    // "오전 12:"로 시작하는 경우 "오전 00:"으로 교체
+    return timeString.replace("오전 12:", "오전 00:");
   }
 
   // 어제

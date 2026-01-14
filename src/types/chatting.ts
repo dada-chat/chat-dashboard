@@ -56,8 +56,10 @@ export interface ChattingRoom {
   updatedAt: Date;
   visitor: Visitor;
   domain: Domain;
-  messages: Message[];
   assignedUser: AssignedUser;
+  messages: Message[];
+  hasMore: boolean;
+  nextCursor: Date | null;
 }
 
 export interface Visitor {
@@ -77,4 +79,7 @@ export interface ChattingRoomResponse {
 export interface ChattingCommonResultResponse {
   success: boolean;
   message?: string;
+}
+export interface MessageResponse extends ChattingCommonResultResponse {
+  data: Message | null;
 }

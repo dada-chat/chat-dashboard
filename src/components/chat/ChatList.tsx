@@ -33,7 +33,7 @@ export default function ChatList({
   };
 
   useEffect(() => {
-    console.log("🔄 refreshTrigger 변경됨! 목록을 새로고침합니다.");
+    console.log("refreshTrigger 변경됨! 목록을 새로고침합니다.");
     fetchChattingList();
   }, [refreshTrigger]);
 

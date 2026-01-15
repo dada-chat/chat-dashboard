@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AuthUser, UserRole } from "@/types/auth";
 import { Modal } from "./Modal";
 import { FormInput } from "./FormInput";
 import { Button } from "./Button";
 import { SelectorRole } from "./SelectorRole";
 import { createInvitation } from "@/lib/invitation";
+import { validateEmail, validateName } from "@/utils/validation";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 
 interface ModalFormInvitationProps {
   user: AuthUser;
@@ -33,8 +35,19 @@ export function ModalFormInvitation({
 
   const isAdmin = user.role === "ADMIN";
 
+  const isFormValid = useMemo(() => {
+    const isEmailValid = validateEmail(email);
+    const isNameValid = validateName(name);
+    const isOrgValid = isAdmin ? organizationId.trim().length > 0 : true;
+
+    return isEmailValid && isNameValid && isOrgValid;
+  }, [email, name, organizationId, isAdmin]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isFormValid) return;
+
     setError("");
     setIsLoading(true);
 
@@ -65,6 +78,7 @@ export function ModalFormInvitation({
       setName("");
       setRole("MANAGER");
       setOrganizationId(user.organizationId ?? "");
+      setError("");
     }
   }, [isOpen, user.organizationId]);
 
@@ -93,6 +107,11 @@ export function ModalFormInvitation({
             value={email}
             placeholder="이메일을 입력해주세요."
             onChange={setEmail}
+            error={
+              email && !validateEmail(email)
+                ? VALIDATION_MESSAGES.EMAIL.INVALID
+                : undefined
+            }
           />
 
           <FormInput
@@ -100,6 +119,11 @@ export function ModalFormInvitation({
             value={name}
             placeholder="이름을 입력해주세요"
             onChange={setName}
+            error={
+              name && !validateName(name)
+                ? VALIDATION_MESSAGES.USERNAME.INVALID
+                : undefined
+            }
           />
           <SelectorRole
             value={role}
@@ -110,7 +134,7 @@ export function ModalFormInvitation({
         </div>
         <div className="flex flex-col gap-2">
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={isLoading} disabled={!isFormValid}>
             메일 보내기
           </Button>
         </div>

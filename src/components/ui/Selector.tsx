@@ -13,6 +13,7 @@ interface SelectorProps<T extends string> {
   value: T;
   size?: "sm" | "md" | "lg";
   options: Option<T>[];
+  dropdownOptions?: Option<T>[];
   onChange: (newValue: T) => void;
   disabled?: boolean;
 }
@@ -21,11 +22,14 @@ export function Selector<T extends string>({
   value,
   size = "lg",
   options,
+  dropdownOptions,
   onChange,
   disabled,
 }: SelectorProps<T>) {
   const [open, setOpen] = useState(false);
   const current = options.find((o) => o.value === value);
+
+  const optionList = dropdownOptions ?? options;
 
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -62,7 +66,7 @@ export function Selector<T extends string>({
       {/* Dropdown */}
       {open && (
         <ul className="absolute z-50 mt-1 w-full rounded-lg border border-gray-300 bg-white shadow">
-          {options.map((option) => (
+          {optionList.map((option) => (
             <li key={option.value}>
               <Button
                 type="button"

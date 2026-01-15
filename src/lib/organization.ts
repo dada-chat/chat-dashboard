@@ -45,3 +45,22 @@ export const getOrganizationById = async (
     };
   }
 };
+
+export const createOrganization = async (data: {
+  name: string;
+}): Promise<SingleOrganizationResponse> => {
+  try {
+    const response = await api.post<SingleOrganizationResponse>(
+      "/organizations",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("회사 등록(createOrganization) error:", error);
+    return {
+      success: false,
+      data: null,
+      message: "회사 등록 중 오류가 발생했습니다.",
+    };
+  }
+};

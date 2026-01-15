@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AuthUser, UserRole } from "@/types/auth";
 import { Modal } from "./Modal";
 import { FormInput } from "./FormInput";
@@ -9,6 +9,12 @@ import { User, UserStatus } from "@/types/user";
 import { SelectorRole } from "./SelectorRole";
 import { SelectorUserStatus } from "./SelectorUserStatus";
 import { createUser, updateUser } from "@/lib/user";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "@/utils/validation";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 
 interface ModalFormUserProps {
   user: AuthUser;
@@ -44,8 +50,24 @@ export function ModalFormUser({
 
   const isAdmin = user.role === "ADMIN";
 
+  const pwStatus = useMemo(() => validatePassword(password), [password]);
+
+  const isFormValid = useMemo(() => {
+    const isEmailValid = mode === "edit" ? true : validateEmail(email);
+    const isNameValid = validateName(name);
+    const isOrgValid = isAdmin ? organizationId.trim().length > 0 : true;
+
+    // 생성 모드일 때만 비밀번호 유효성 체크
+    const isPasswordValid = mode === "create" ? pwStatus.isValid : true;
+
+    return isEmailValid && isNameValid && isOrgValid && isPasswordValid;
+  }, [email, name, organizationId, pwStatus.isValid, mode, isAdmin]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isFormValid) return;
+
     setError("");
     setIsLoading(true);
 
@@ -135,6 +157,11 @@ export function ModalFormUser({
             placeholder="이메일을 입력해주세요."
             onChange={setEmail}
             disabled={mode === "edit" ? true : false}
+            error={
+              email && !validateEmail(email)
+                ? VALIDATION_MESSAGES.EMAIL.INVALID
+                : undefined
+            }
           />
           {mode === "create" && (
             <FormInput
@@ -143,6 +170,11 @@ export function ModalFormUser({
               value={password}
               placeholder="비밀번호를 입력해주세요."
               onChange={setPassword}
+              error={
+                password && !pwStatus.isValid
+                  ? VALIDATION_MESSAGES.PASSWORD.INVALID
+                  : undefined
+              }
             />
           )}
           <FormInput
@@ -150,6 +182,11 @@ export function ModalFormUser({
             value={name}
             placeholder="이름을 입력해주세요"
             onChange={setName}
+            error={
+              name && !validateName(name)
+                ? VALIDATION_MESSAGES.USERNAME.INVALID
+                : undefined
+            }
           />
           <SelectorRole
             value={role}
@@ -166,7 +203,7 @@ export function ModalFormUser({
         </div>
         <div className="flex flex-col gap-2">
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <Button type="submit" isLoading={isLoading}>
+          <Button type="submit" isLoading={isLoading} disabled={!isFormValid}>
             {mode === "create" ? "등록" : "수정"}
           </Button>
         </div>

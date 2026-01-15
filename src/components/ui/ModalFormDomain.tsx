@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createDomain } from "@/lib/domain";
 import { AuthUser } from "@/types/auth";
 import { Modal } from "./Modal";
 import { FormInput } from "./FormInput";
 import { Button } from "./Button";
+import { validateUrl } from "@/utils/validation";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 
 interface ModalFormDomainProps {
   user: AuthUser;
@@ -24,21 +26,19 @@ export function ModalFormDomain({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const isValidUrl = (url: string) => {
-    return /^https?:\/\//i.test(url);
-  };
+  const isFormValid = useMemo(() => {
+    return validateUrl(url) && !!user.organizationId;
+  }, [url, user.organizationId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFormValid) return;
+
     setError("");
+    setIsLoading(true);
 
     if (!user.organizationId) {
       setError("조직 정보가 없습니다.");
-      return;
-    }
-
-    if (!isValidUrl(url.trim())) {
-      setError("http:// 또는 https:// 로 시작하는 URL을 입력해주세요.");
       return;
     }
 
@@ -79,10 +79,15 @@ export function ModalFormDomain({
             placeholder="https://example.com"
             value={url}
             onChange={setUrl}
+            error={
+              url && !validateUrl(url)
+                ? VALIDATION_MESSAGES.URL.INVALID
+                : undefined
+            }
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
-        <Button type="submit" isLoading={isLoading}>
+        <Button type="submit" isLoading={isLoading} disabled={!isFormValid}>
           등록
         </Button>
       </form>

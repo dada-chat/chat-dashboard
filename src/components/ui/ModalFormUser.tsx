@@ -120,7 +120,7 @@ export function ModalFormUser({
         setEmail("");
         setName("");
         setRole("MANAGER");
-        setStatus("PENDING");
+        setStatus("ACTIVE");
         setOrganizationId(user.organizationId ?? "");
       }
     }
@@ -199,6 +199,8 @@ export function ModalFormUser({
             value={status}
             onChange={setStatus}
             selectName="계정 상태"
+            currentUserRole={user.role}
+            targetUserRole={targetUser?.role}
           />
         </div>
         <div className="flex flex-col gap-2">

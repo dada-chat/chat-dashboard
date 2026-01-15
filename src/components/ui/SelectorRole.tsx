@@ -24,13 +24,15 @@ export function SelectorRole({
   currentUserRole,
   targetUserRole,
 }: UserRoleSelectProps) {
-  let isDisabled = false;
-  if (currentUserRole) {
-    isDisabled = currentUserRole !== "ADMIN";
-  }
-  if (currentUserRole && targetUserRole) {
-    isDisabled = currentUserRole !== "ADMIN" && targetUserRole === "ADMIN";
-  }
+  // 로그인 유저 권한 확인
+  const isAdmin = currentUserRole === "ADMIN";
+  // 최고관리자가 아닌 경우, 최고관리자 계정은 수정 불가
+  const isDisabled = !isAdmin && targetUserRole === "ADMIN";
+
+  const dropdownOptions =
+    currentUserRole === "ADMIN"
+      ? USER_ROLE_OPTIONS
+      : USER_ROLE_OPTIONS.filter((option) => option.value !== "ADMIN");
 
   return (
     <div className="flex flex-col gap-1">
@@ -43,14 +45,13 @@ export function SelectorRole({
         value={value}
         onChange={onChange}
         options={USER_ROLE_OPTIONS}
+        dropdownOptions={dropdownOptions}
         disabled={isDisabled}
       />
 
       {isDisabled && (
         <p className="text-xs text-gray-400">
-          {targetUserRole
-            ? "*최고관리자의 권한은 변경할 수 없습니다."
-            : "*기본적으로 매니저 권한을 부여하고 있습니다."}
+          *최고관리자 권한은 변경할 수 없습니다.
         </p>
       )}
     </div>

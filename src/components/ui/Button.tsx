@@ -61,7 +61,7 @@ export function Button({
         sizeStyle[size],
         variantStyle[variant],
         isDisabled
-          ? "cursor-not-allowed !bg-gray-300 !text-gray-500"
+          ? "cursor-not-allowed !bg-gray-200 !text-gray-500 "
           : "cursor-pointer",
         className
       )}

@@ -1,34 +1,34 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { createDomain } from "@/lib/domain";
+import { createOrganization } from "@/lib/organization";
 import { AuthUser } from "@/types/auth";
 import { Modal } from "./Modal";
 import { FormInput } from "./FormInput";
 import { Button } from "./Button";
-import { validateUrl } from "@/utils/validation";
+import { validateName } from "@/utils/validation";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
 
-interface ModalFormDomainProps {
+interface ModalFormOrganizationProps {
   user: AuthUser;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export function ModalFormDomain({
+export function ModalFormOrganization({
   user,
   isOpen,
   onClose,
   onSuccess,
-}: ModalFormDomainProps) {
-  const [url, setUrl] = useState("");
+}: ModalFormOrganizationProps) {
+  const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const isFormValid = useMemo(() => {
-    return validateUrl(url) && !!user.organizationId;
-  }, [url, user.organizationId]);
+    return validateName(name) && !!user.organizationId;
+  }, [name, user.organizationId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,25 +37,19 @@ export function ModalFormDomain({
     setError("");
     setIsLoading(true);
 
-    if (!user.organizationId) {
-      setError("회사 정보가 없습니다.");
-      return;
-    }
-
     try {
-      const result = await createDomain({
-        domainUrl: url,
-        targetOrgId: user.organizationId,
+      const result = await createOrganization({
+        name,
       });
 
       if (result.success) {
-        setUrl("");
+        setName("");
         onSuccess();
         onClose();
       }
     } catch (err: any) {
       setError(
-        err.response?.data?.message || "도메인 등록 중 오류가 발생했습니다."
+        err.response?.data?.message || "회사 등록 중 오류가 발생했습니다."
       );
     } finally {
       setIsLoading(false);
@@ -63,24 +57,19 @@ export function ModalFormDomain({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      variant="right"
-      title="도메인 등록"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} variant="right" title="회사 등록">
       <form onSubmit={handleSubmit} className="flex flex-col flex-1 gap-4">
         <div className="flex flex-col flex-1 gap-4">
           <FormInput
-            label="웹사이트 url"
+            label="회사명"
             type="text"
             required
-            placeholder="https://example.com"
-            value={url}
-            onChange={setUrl}
+            placeholder={VALIDATION_MESSAGES.ORGNAME.RREQUIRED}
+            value={name}
+            onChange={setName}
             error={
-              url && !validateUrl(url)
-                ? VALIDATION_MESSAGES.URL.INVALID
+              name && !validateName(name)
+                ? VALIDATION_MESSAGES.ORGNAME.INVALID
                 : undefined
             }
           />

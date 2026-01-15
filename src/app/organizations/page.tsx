@@ -12,6 +12,7 @@ import { getOrganizations } from "@/lib/organization";
 import { formatDateTime } from "@/utils/date";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ModalFormOrganization } from "@/components/ui/ModalFormOrganization";
 
 export default function OrganizationListPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -23,7 +24,7 @@ export default function OrganizationListPage() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const fetchOurUsers = async () => {
+  const fetchOrganizations = async () => {
     try {
       const response = await getOrganizations();
       if (response.success) {
@@ -50,7 +51,7 @@ export default function OrganizationListPage() {
   }, [user, router]);
 
   useEffect(() => {
-    fetchOurUsers();
+    fetchOrganizations();
   }, []);
 
   if (isLoading) return <div>로딩 중...</div>;
@@ -137,6 +138,12 @@ export default function OrganizationListPage() {
           <NodataArea />
         )}
       </div>
+      <ModalFormOrganization
+        user={user}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSuccess={fetchOrganizations}
+      />
     </DashboardLayout>
   );
 }

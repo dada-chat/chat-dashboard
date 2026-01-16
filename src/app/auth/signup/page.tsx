@@ -18,6 +18,7 @@ import {
   validatePassword,
 } from "@/utils/validation";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
+import Link from "next/link";
 
 export default function SignUpPage() {
   const searchParams = useSearchParams();
@@ -292,7 +293,7 @@ export default function SignUpPage() {
               />
             </div>
 
-            <div>
+            <div className="flex flex-col gap-4">
               <Button
                 type="submit"
                 disabled={!isFormValid}
@@ -300,6 +301,17 @@ export default function SignUpPage() {
               >
                 회원가입
               </Button>
+              <Link href={NAVIGATION.SIGNIN}>
+                <Button
+                  type="button"
+                  variant="none"
+                  size="md"
+                  className="!text-gray-400 !text-sm font-normal"
+                >
+                  이미 계정이 있다면,
+                  <span className="text-gray-600 font-semibold">로그인</span>
+                </Button>
+              </Link>
             </div>
           </form>
         </div>

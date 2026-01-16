@@ -11,6 +11,7 @@ import { SignInResponse } from "@/types/auth";
 import { NAVIGATION } from "@/constants/navigation";
 import { validateEmail, validatePassword } from "@/utils/validation";
 import { VALIDATION_MESSAGES } from "@/constants/messages";
+import Link from "next/link";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -126,10 +127,21 @@ export default function SignInPage() {
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
-          <div>
+          <div className="flex flex-col gap-4">
             <Button type="submit" isLoading={isLoading}>
               로그인
             </Button>
+            <Link href={NAVIGATION.SIGNUP}>
+              <Button
+                type="button"
+                variant="none"
+                size="md"
+                className="!text-gray-400 !text-sm font-normal"
+              >
+                DadaChat이 처음이라면,
+                <span className="text-gray-600 font-semibold">회원가입</span>
+              </Button>
+            </Link>
           </div>
         </form>
       </div>

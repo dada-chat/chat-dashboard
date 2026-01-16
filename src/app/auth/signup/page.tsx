@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { FormInput } from "@/components/ui/FormInput";
@@ -12,6 +12,13 @@ import { Alert, AlertIconType } from "@/components/ui/Alert";
 import { signUpAsAgentWithOrganization, signUpByInvitation } from "@/lib/auth";
 import { UserRole } from "@/types/auth";
 import { USER_ROLE } from "@/constants/user";
+import {
+  validateEmail,
+  validateName,
+  validatePassword,
+} from "@/utils/validation";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
+import Link from "next/link";
 
 export default function SignUpPage() {
   const searchParams = useSearchParams();
@@ -76,38 +83,40 @@ export default function SignUpPage() {
     fetchInvitation();
   }, [invitationId]);
 
-  const passwordValidation = {
-    length: password.length >= 8,
-    hasNumber: /\d/.test(password),
-    hasLetter: /[a-zA-Z]/.test(password),
-  };
+  const isEmailValid = validateEmail(email);
+  const isNameValid = validateName(name);
 
-  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+  const pwStatus = useMemo(() => validatePassword(password), [password]);
+  const isPasswordValid = pwStatus.isValid;
   const isPasswordMatch = password.length > 0 && password === passwordConfirm;
 
-  let isFormValid = invitationId
-    ? organizationName &&
-      organizationId &&
-      email &&
-      name &&
+  // 전체 유효성 판단
+  const isFormValid = useMemo(() => {
+    const commonFields =
+      isEmailValid &&
+      isNameValid &&
       isPasswordValid &&
-      isPasswordMatch
-    : organizationName && email && name && isPasswordValid && isPasswordMatch;
+      isPasswordMatch &&
+      organizationName.trim().length > 0;
+
+    return invitationId ? commonFields && organizationId : commonFields;
+  }, [
+    isEmailValid,
+    isNameValid,
+    isPasswordValid,
+    isPasswordMatch,
+    organizationName,
+    organizationId,
+    invitationId,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isFormValid) return;
+
     setIsLoading(true);
     setError("");
-
-    if (!isPasswordValid) {
-      setPasswordTouched(true);
-      return;
-    }
-
-    if (!isPasswordMatch) {
-      setPasswordConfirmTouched(true);
-      return;
-    }
 
     try {
       if (!invitationId) {
@@ -126,7 +135,6 @@ export default function SignUpPage() {
           setSystemMessage(
             "회원가입이 완료되었습니다.\n다다챗 관리자의 승인 이후 서비스 이용이 가능합니다."
           );
-          router.push(NAVIGATION.SIGNIN);
         } else {
           setSystemMessageIcon("warning");
           setSystemMessage(
@@ -238,6 +246,11 @@ export default function SignUpPage() {
                 value={email}
                 onChange={setEmail}
                 disabled={invitationId ? true : false}
+                error={
+                  email && !isEmailValid
+                    ? VALIDATION_MESSAGES.EMAIL.INVALID
+                    : undefined
+                }
               />
               <FormInput
                 label="이름"
@@ -246,6 +259,11 @@ export default function SignUpPage() {
                 placeholder="이름을 입력해주세요."
                 value={name}
                 onChange={setName}
+                error={
+                  name && !isNameValid
+                    ? VALIDATION_MESSAGES.USERNAME.INVALID
+                    : undefined
+                }
               />
               <FormInput
                 label="비밀번호"
@@ -253,15 +271,11 @@ export default function SignUpPage() {
                 required
                 placeholder="비밀번호를 입력해주세요."
                 value={password}
-                onChange={(value: string) => {
-                  setPassword(value);
-                  setPasswordTouched(false);
-                }}
-                onBlur={() => setPasswordTouched(true)}
+                onChange={setPassword}
                 error={
-                  passwordTouched && !isPasswordValid
-                    ? "비밀번호는 8자 이상, 영문과 숫자를 포함해야 합니다."
-                    : ""
+                  password && !isPasswordValid
+                    ? VALIDATION_MESSAGES.PASSWORD.INVALID
+                    : undefined
                 }
               />
               <FormInput
@@ -270,20 +284,16 @@ export default function SignUpPage() {
                 required
                 placeholder="비밀번호를 다시 한번 입력해주세요."
                 value={passwordConfirm}
-                onChange={(value: string) => {
-                  setPasswordConfirm(value);
-                  setPasswordConfirmTouched(false);
-                }}
-                onBlur={() => setPasswordConfirmTouched(true)}
+                onChange={setPasswordConfirm}
                 error={
-                  passwordConfirmTouched && !isPasswordMatch
+                  passwordConfirm && !isPasswordMatch
                     ? "비밀번호가 일치하지 않습니다."
-                    : ""
+                    : undefined
                 }
               />
             </div>
 
-            <div>
+            <div className="flex flex-col gap-4">
               <Button
                 type="submit"
                 disabled={!isFormValid}
@@ -291,6 +301,17 @@ export default function SignUpPage() {
               >
                 회원가입
               </Button>
+              <Link href={NAVIGATION.SIGNIN}>
+                <Button
+                  type="button"
+                  variant="none"
+                  size="md"
+                  className="!text-gray-400 !text-sm font-normal"
+                >
+                  이미 계정이 있다면,
+                  <span className="text-gray-600 font-semibold">로그인</span>
+                </Button>
+              </Link>
             </div>
           </form>
         </div>

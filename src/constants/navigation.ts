@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 export const NAVIGATION = {
   SIGNIN: "/auth/signin",
+  SIGNUP: "/auth/signup",
   SIGNOUT: "/auth/signout",
   HOME: "/",
   CHAT: "/chat",

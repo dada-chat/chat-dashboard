@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { useAuthStore } from "@/store/authStore";
@@ -9,10 +9,21 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { SignInResponse } from "@/types/auth";
 import { NAVIGATION } from "@/constants/navigation";
+import { validateEmail, validatePassword } from "@/utils/validation";
+import { VALIDATION_MESSAGES } from "@/constants/messages";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Touched 상태 추가
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+
+  const isEmailValid = useMemo(() => validateEmail(email), [email]);
+  const pwStatus = useMemo(() => validatePassword(password), [password]);
+  const isPasswordValid = pwStatus.isValid;
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,6 +39,10 @@ export default function SignInPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    setEmailTouched(true);
+    setPasswordTouched(true);
+    if (!isEmailValid || !isPasswordValid) return;
     setIsLoading(true);
     setError("");
 
@@ -78,16 +93,34 @@ export default function SignInPage() {
               required
               placeholder="email@example.com"
               value={email}
-              onChange={setEmail}
+              onChange={(value: string) => {
+                setEmail(value);
+                setEmailTouched(false);
+              }}
+              onBlur={() => setEmailTouched(true)}
+              error={
+                emailTouched && email && !isEmailValid
+                  ? VALIDATION_MESSAGES.EMAIL.INVALID
+                  : undefined
+              }
             />
 
             <FormInput
               label="비밀번호"
               type="password"
               required
-              placeholder="••••••••"
+              placeholder={VALIDATION_MESSAGES.PASSWORD.REQUIRED}
               value={password}
-              onChange={setPassword}
+              onChange={(value: string) => {
+                setPassword(value);
+                setPasswordTouched(false);
+              }}
+              onBlur={() => setPasswordTouched(true)}
+              error={
+                passwordTouched && password && !isPasswordValid
+                  ? VALIDATION_MESSAGES.PASSWORD.INVALID
+                  : undefined
+              }
             />
           </div>
 

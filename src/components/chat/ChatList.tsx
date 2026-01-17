@@ -5,13 +5,14 @@ import { ChatListItem } from "./ChatListItem";
 import { ChattingListItem } from "@/types/chatting";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import NodataArea from "../ui/NodataArea";
 
 export default function ChatList({
   refreshTrigger,
 }: {
   refreshTrigger?: number;
 }) {
-  const [ChattingList, setChattingList] = useState<ChattingListItem[]>([]);
+  const [chattingList, setChattingList] = useState<ChattingListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const router = useRouter();
@@ -47,14 +48,24 @@ export default function ChatList({
         <h2 className="text-sm font-semibold text-gray-600">채팅방 목록</h2>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {ChattingList.map((item) => (
-          <ChatListItem
-            key={item.id}
-            data={item}
-            isSelected={selectedId === item.id}
-            onClick={() => handleRoomClick(item.id)}
-          />
-        ))}
+        {chattingList.length > 0 ? (
+          chattingList.map((item) => (
+            <ChatListItem
+              key={item.id}
+              data={item}
+              isSelected={selectedId === item.id}
+              onClick={() => handleRoomClick(item.id)}
+            />
+          ))
+        ) : (
+          <>
+            {" "}
+            <NodataArea
+              content="현재 접수된 채팅방 목록이 없습니다."
+              iscenter={true}
+            />
+          </>
+        )}
       </div>
     </div>
   );

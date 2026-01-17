@@ -56,7 +56,6 @@ export default function ChatLayout({
         {/* 좌측: 채팅 목록 (고정) */}
         <div className="w-[380px]">
           <ChatList refreshTrigger={refreshTrigger} />
-          {/* ChatList 내부에서는 이제 selectedId를 URL 파라미터에서 읽어오도록 수정합니다. */}
         </div>
 
         {/* 우측 콘텐츠 영역 (page.tsx 혹은 [roomId]/page.tsx가 들어옴) */}

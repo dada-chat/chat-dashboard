@@ -10,6 +10,7 @@ import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { FileUser, MessagesSquare, FileUp } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -228,6 +229,11 @@ export default function LandingPage() {
         </section>
       </main>
       <Footer />
+      <Script
+        src="https://dadachat-widget.lds8835.workers.dev/widget.js"
+        data-dadachat-site-key="01a102ae-61c3-4c90-92f8-c3b1e14cc733"
+        strategy="afterInteractive"
+      />
     </>
   );
 }

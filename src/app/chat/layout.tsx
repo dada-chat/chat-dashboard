@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import ChatList from "@/components/chat/ChatList";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
+import { getDashboardSocket } from "@/lib/socket";
 
 export const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
@@ -21,23 +22,22 @@ export default function ChatLayout({
   useEffect(() => {
     if (!user) return;
 
-    const socket = io(SOCKET_URL, {
-      transports: ["websocket"],
-      withCredentials: false,
-    });
+    const orgId = user.organizationId;
+
+    const socket = getDashboardSocket();
+
+    if (socket.connected) {
+      console.log("[Layout] 이미 연결된 상태 → org join");
+      socket.emit("update_conversation_list", orgId);
+    }
 
     // 소켓 연결 확인
     socket.on("connect", () => {
       console.log("[Layout 소켓] 연결 성공! ID:", socket.id);
 
-      const orgId = user.organizationId;
       console.log(`[Layout] org_${orgId} 채널 입장 시도`);
       socket.emit("update_conversation_list", orgId);
     });
-
-    // socket.on("connect_error", (err) => {
-    //   console.error("[Layout 소켓] 연결 실패:", err.message);
-    // });
 
     //  목록 업데이트 이벤트 수신
     socket.on("update_conversation_list", (data) => {
@@ -45,10 +45,15 @@ export default function ChatLayout({
       triggerRefresh(); // ChatList를 재호출
     });
 
+    // 에러 핸들링 추가
+    socket.on("connect_error", (err) => {
+      console.error("[Layout 소켓] 연결 실패:", err.message);
+    });
+
     return () => {
-      socket.disconnect();
+      socket.off("update_conversation_list");
     };
-  }, [user]);
+  }, [user, triggerRefresh]);
 
   return (
     <DashboardLayout>

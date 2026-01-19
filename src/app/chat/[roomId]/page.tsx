@@ -15,7 +15,6 @@ export default function ChatRoomPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   const {
-    messages,
     cursor,
     hasMore,
     isLoadingPrev,
@@ -38,12 +37,18 @@ export default function ChatRoomPage() {
           status: response.data.status,
         });
       }
-
-      await updateChattingRoomAsRead(roomId);
     } catch (error) {
       console.error("채팅방 조회 실패", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const updateChattingRoomReadCount = async () => {
+    try {
+      await updateChattingRoomAsRead(roomId);
+    } catch (err) {
+      console.error("실시간 읽음 처리 실패:", err);
     }
   };
 
@@ -87,6 +92,8 @@ export default function ChatRoomPage() {
 
     fetchChattingRoom();
 
+    updateChattingRoomReadCount();
+
     return () => reset(); // 페이지 벗어날 때 초기화
   }, [roomId]);
 
@@ -98,6 +105,7 @@ export default function ChatRoomPage() {
           onScroll={handleScroll}
           chatWindowRef={chatWindowRef}
           onMetadata={setChattingRoom}
+          onMessageRead={updateChattingRoomReadCount}
         />
       </div>
       <div className="w-[320px] bg-white">

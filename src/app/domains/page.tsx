@@ -11,6 +11,7 @@ import { useAuthStore } from "@/store/authStore";
 import { Toggle } from "@/components/ui/Toggle";
 import { ModalFormDomain } from "@/components/ui/ModalFormDomain";
 import { Button } from "@/components/ui/Button";
+import { CopyCheck, Copy } from "lucide-react";
 
 export default function DomainPage() {
   const [domains, setDomains] = useState<Domain[]>([]);
@@ -63,6 +64,22 @@ export default function DomainPage() {
     }
   };
 
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const handleCopy = async (siteKey: string) => {
+    const code = `
+    <script
+      src="https://dadachat-widget.lds8835.workers.dev/widget.js"
+      data-dadachat-site-key="${siteKey}"
+    ></script>
+    `;
+
+    await navigator.clipboard.writeText(code);
+    setCopiedKey(siteKey);
+
+    setTimeout(() => setCopiedKey(null), 1500);
+  };
+
   if (isLoading) return <div>로딩 중...</div>;
 
   // 테이블 컬럼 정의
@@ -89,8 +106,33 @@ export default function DomainPage() {
       ),
     },
     {
-      header: "생성일",
-      render: (row: Domain) => new Date(row.createdAt).toLocaleDateString(),
+      header: "위젯 설치 코드",
+      render: (row: Domain) => (
+        <div className="flex">
+          {row.isActive ? (
+            <Button
+              size="sm"
+              variant="none"
+              onClick={() => handleCopy(row.siteKey)}
+              className="!w-auto !px-0"
+            >
+              {copiedKey === row.siteKey ? (
+                <>
+                  <CopyCheck className="w-4 h-4 text-green-500" />
+                  복사됨
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  코드 복사
+                </>
+              )}
+            </Button>
+          ) : (
+            <span>-</span>
+          )}
+        </div>
+      ),
     },
     {
       header: "상태",
@@ -122,6 +164,10 @@ export default function DomainPage() {
           </div>
         );
       },
+    },
+    {
+      header: "등록일",
+      render: (row: Domain) => new Date(row.createdAt).toLocaleDateString(),
     },
   ];
 

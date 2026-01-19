@@ -37,7 +37,6 @@ export default function DomainPage() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     fetchDomains();
   }, []);
 

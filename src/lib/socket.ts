@@ -11,3 +11,11 @@ export const getDashboardSocket = () => {
   }
   return socket;
 };
+
+export const disconnectDashboardSocket = () => {
+  if (socket) {
+    console.log("[Socket] 소켓 연결 해제");
+    socket.disconnect();
+    socket = null;
+  }
+};

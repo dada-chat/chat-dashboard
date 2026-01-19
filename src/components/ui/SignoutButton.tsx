@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button, ButtonSize, ButtonVariant } from "./Button";
 import { NAVIGATION } from "@/constants/navigation";
 import { useState } from "react";
+import { disconnectDashboardSocket } from "@/lib/socket";
 
 interface SignoutButtonProps {
   variant?: ButtonVariant;
@@ -29,6 +30,9 @@ export const SignoutButton = ({
     setIsLoading(true);
     await signout();
     broadcastSignout();
+
+    // 소켓 연결 해지
+    disconnectDashboardSocket();
     router.replace(NAVIGATION.SIGNIN);
   };
 

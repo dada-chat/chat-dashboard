@@ -3,6 +3,7 @@ import { useAuthStore } from "@/store/authStore";
 import { signout } from "./auth";
 import { broadcastSignout } from "./authBroadcast";
 import { NAVIGATION } from "@/constants/navigation";
+import { disconnectDashboardSocket } from "./socket";
 
 const api = axios.create({
   baseURL: "/api",
@@ -104,5 +105,9 @@ export default api;
 async function handleForceSignout() {
   await signout();
   broadcastSignout();
+
+  // 소켓 연결 해제
+  disconnectDashboardSocket();
+
   window.location.href = NAVIGATION.SIGNIN;
 }

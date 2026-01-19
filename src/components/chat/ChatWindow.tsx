@@ -11,17 +11,19 @@ import { formatChatDate } from "@/utils/date";
 import {
   getChattingRoom,
   sendNewMessage,
+  updateChattingRoomAsRead,
   updateChattingRoomStatus,
 } from "@/lib/chatting";
-import { SOCKET_URL } from "@/app/chat/layout";
 import { useChatStore } from "@/store/chatStore";
 import { flushSync } from "react-dom";
+import { getDashboardSocket } from "@/lib/socket";
 
 interface ChatWindowProps {
   roomId: string;
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
   chatWindowRef: RefObject<HTMLDivElement | null>;
   onMetadata: (data: ChattingRoom) => void;
+  onMessageRead: () => void;
 }
 
 export default function ChatWindow({
@@ -29,6 +31,7 @@ export default function ChatWindow({
   onScroll,
   chatWindowRef,
   onMetadata,
+  onMessageRead,
 }: ChatWindowProps) {
   const [content, setContent] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -109,10 +112,12 @@ export default function ChatWindow({
   useEffect(() => {
     if (!roomId) return;
 
-    const socket = io(SOCKET_URL, {
-      transports: ["websocket"],
-      withCredentials: false,
-    });
+    const socket = getDashboardSocket();
+
+    if (socket.connected) {
+      console.log("[Layout] 이미 연결된 상태 → join roomId");
+      socket.emit("join_chattingroom", roomId);
+    }
 
     // 소켓 연결 확인
     socket.on("connect", () => {
@@ -130,10 +135,11 @@ export default function ChatWindow({
 
       // 2. 메시지 추가 후 하단으로 스크롤
       scrollToBottom("smooth");
+      onMessageRead();
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("message_received");
     };
   }, [roomId, addMessage]);
 

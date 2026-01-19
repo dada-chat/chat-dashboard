@@ -12,6 +12,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { ModalFormDomain } from "@/components/ui/ModalFormDomain";
 import { Button } from "@/components/ui/Button";
 import { CopyCheck, Copy } from "lucide-react";
+import LoadingArea from "@/components/ui/LoadingArea";
 
 export default function DomainPage() {
   const [domains, setDomains] = useState<Domain[]>([]);
@@ -36,6 +37,7 @@ export default function DomainPage() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     fetchDomains();
   }, []);
 
@@ -79,8 +81,6 @@ export default function DomainPage() {
 
     setTimeout(() => setCopiedKey(null), 1500);
   };
-
-  if (isLoading) return <div>로딩 중...</div>;
 
   // 테이블 컬럼 정의
   const baseColumns = [
@@ -201,7 +201,9 @@ export default function DomainPage() {
             도메인 추가
           </Button>
         </div>
-        {domains.length > 0 ? (
+        {isLoading ? (
+          <LoadingArea text="도메인 목록을 불러오는 중..." />
+        ) : domains.length > 0 ? (
           <Table columns={columns} data={domains} rowKey={(row) => row.id} />
         ) : (
           <NodataArea />

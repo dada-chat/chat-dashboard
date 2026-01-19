@@ -43,7 +43,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div>
-                <Link href={NAVIGATION.SIGNIN}>
+                <Link href={NAVIGATION.HOME}>
                   <Button variant="dark" className="!w-auto">
                     바로 시작하기
                   </Button>
@@ -68,17 +68,29 @@ export default function LandingPage() {
         {/* ================= VALUE STATEMENT ================= */}
         <section className="py-24">
           <div className="flex flex-col gap-16 mx-auto max-w-6xl px-6">
-            <div className="flex flex-col gap-4 text-center">
-              <h2 className="text-3xl font-bold">
-                여기저기 흩어져 있는 고객 문의,
-                <br />
-                지금은 어떻게 확인하고 있나요?
-              </h2>
-              <p className="text-lg text-gray-600">
-                이메일, 전화 등 흩어진 고객 문의를
-                <br />
-                하나의 대시보드에 모아 관리해 보세요!
-              </p>
+            <div className="flex flex-col gap-8 text-center">
+              <div className="flex flex-col gap-4">
+                <h2 className="text-3xl font-bold">
+                  여기저기 흩어져 있는 고객 문의,
+                  <br />
+                  지금은 어떻게 확인하고 있나요?
+                </h2>
+                <p className="text-lg text-gray-600">
+                  이메일, 전화 등 흩어진 고객 문의를
+                  <br />
+                  하나의 대시보드에 모아 관리해 보세요!
+                </p>
+              </div>
+              <div>
+                <Link
+                  href="https://www.notion.so/Dada-Chat-2c41050d238680e28f75c402402d0711?source=copy_link"
+                  target="_blank"
+                >
+                  <Button variant="dark" className="!w-auto">
+                    기획 문서 확인하기
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -205,7 +217,7 @@ export default function LandingPage() {
                 지금 바로 확인해보세요!
               </h2>
               <div>
-                <Link href={NAVIGATION.SIGNIN}>
+                <Link href={NAVIGATION.HOME}>
                   <Button variant="dark" className="!w-auto">
                     바로 시작하기
                   </Button>

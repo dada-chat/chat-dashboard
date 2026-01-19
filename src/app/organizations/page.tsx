@@ -13,6 +13,7 @@ import { formatDateTime } from "@/utils/date";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ModalFormOrganization } from "@/components/ui/ModalFormOrganization";
+import LoadingArea from "@/components/ui/LoadingArea";
 
 export default function OrganizationListPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -47,14 +48,11 @@ export default function OrganizationListPage() {
     // 어드민이 아니면 organizationId 상세페이지
     if (user.role !== "ADMIN") {
       router.replace(`/organizations/${user.organizationId}`);
+      return;
     }
-  }, [user, router]);
 
-  useEffect(() => {
     fetchOrganizations();
-  }, []);
-
-  if (isLoading) return <div>로딩 중...</div>;
+  }, [user, router]);
 
   // 테이블 컬럼 정의
   const baseColumns = [
@@ -121,21 +119,31 @@ export default function OrganizationListPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-4 px-6">
-        <div>
-          {user?.role === "ADMIN" && (
-            <Button size="md" className="!w-auto" onClick={handleCreateClick}>
-              회사 추가
-            </Button>
-          )}
-        </div>
-        {organizations.length > 0 ? (
-          <Table
-            columns={baseColumns}
-            data={organizations}
-            rowKey={(row) => row.id}
-          />
+        {isLoading ? (
+          <LoadingArea text="회사 정보 불러오는 중..." />
         ) : (
-          <NodataArea />
+          <>
+            <div>
+              {user?.role === "ADMIN" && (
+                <Button
+                  size="md"
+                  className="!w-auto"
+                  onClick={handleCreateClick}
+                >
+                  회사 추가
+                </Button>
+              )}
+            </div>
+            {organizations.length > 0 ? (
+              <Table
+                columns={baseColumns}
+                data={organizations}
+                rowKey={(row) => row.id}
+              />
+            ) : (
+              <NodataArea />
+            )}
+          </>
         )}
       </div>
       <ModalFormOrganization

@@ -14,6 +14,7 @@ import clsx from "clsx";
 import { USER_ROLE } from "@/constants/user";
 import { PencilLine } from "lucide-react";
 import { ModalFormUser } from "@/components/ui/ModalFormUser";
+import LoadingArea from "@/components/ui/LoadingArea";
 
 export default function UserListPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -68,8 +69,6 @@ export default function UserListPage() {
     setSelectedUser(user);
     setIsModalOpen(true);
   };
-
-  if (isLoading) return <div>로딩 중...</div>;
 
   // 테이블 컬럼 정의
   const baseColumns = [
@@ -181,7 +180,9 @@ export default function UserListPage() {
             </Button>
           )}
         </div>
-        {users.length > 0 ? (
+        {isLoading ? (
+          <LoadingArea text="사용자 목록을 불러오는 중..." />
+        ) : users.length > 0 ? (
           <Table columns={columns} data={users} rowKey={(row) => row.id} />
         ) : (
           <NodataArea />

@@ -27,7 +27,7 @@ export default function NodataArea({
         iscenter && "h-full pt-0"
       )}
     >
-      <div className="flex flex-col w-full items-center justify-center gap-4 lg:gap-8">
+      <div className="flex flex-col w-full items-center justify-center gap-8">
         <MessageSquareX className="h-10 w-10 text-gray-400" />
         <p className="text-sm text-gray-600">{content}</p>
         {isShowLinkButton && (

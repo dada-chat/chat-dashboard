@@ -15,6 +15,7 @@ import { Invitation, GetInvitationsParams } from "@/types/invitation";
 import { ModalFormInvitation } from "@/components/ui/ModalFormInvitation";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FilterInvitationStatus } from "@/components/ui/FilterInvitationStatus";
+import LoadingArea from "@/components/ui/LoadingArea";
 
 export default function DomainPage() {
   const router = useRouter();
@@ -77,8 +78,6 @@ export default function DomainPage() {
     setSelectedInvitation(undefined);
     setIsModalOpen(true);
   };
-
-  if (isLoading) return <div>로딩 중...</div>;
 
   // 테이블 컬럼 정의
   const baseColumns = [
@@ -187,7 +186,9 @@ export default function DomainPage() {
             />
           </div>
         </div>
-        {invitations.length > 0 ? (
+        {isLoading ? (
+          <LoadingArea text="초대 목록을 불러오는 중..." />
+        ) : invitations.length > 0 ? (
           <Table
             columns={columns}
             data={invitations}

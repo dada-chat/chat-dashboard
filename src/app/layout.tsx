@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 export const metadata: Metadata = {
   title: "DadaChat | 웹 CS 관리 서비스",
-  description: "웹사이트 고객 문의(CS)를 대시보드에서는 관리하는 서비스",
+  description: "위젯을 통해 접수된 웹사이트 고객 문의(CS)를 관리하는 서비스",
   openGraph: {
     title: "DadaChat | 웹 CS 관리 서비스",
     description: "웹사이트 고객 문의를 한 곳에서 관리하세요",

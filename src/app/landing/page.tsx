@@ -26,18 +26,18 @@ export default function LandingPage() {
   return (
     <>
       <Header />
-      <main className="w-full bg-white text-gray-800">
+      <main className="w-full bg-white text-gray-800 break-keep">
         {/* <section className="relative overflow-hidden bg-gradient-to-t from-primary-dark via-primary-100 to-primary-lightest"> */}
-        <section className="relative overflow-hidden rounded-2xl mx-6 py-24 bg-primary">
-          <div className="flex flex-col gap-16 mx-auto max-w-6xl text-center">
+        <section className="relative overflow-hidden rounded-2xl mx-6 py-16 lg:py-24 bg-primary">
+          <div className="flex flex-col gap-16 mx-auto px-6 max-w-6xl text-center">
             <div className="flex flex-col gap-9">
               <div className="flex flex-col gap-4 text-white">
-                <h1 className="text-4xl font-bold">
+                <h1 className="text-2xl md:text-4xl font-bold">
                   웹사이트에 위젯을 달고
                   <br />
                   고객 문의를 한 곳에서 관리하세요.
                 </h1>
-                <p className="text-lg">
+                <p className="text-sm mg:text-lg">
                   고객은 웹사이트 위젯으로 문의하고,
                   <br />
                   우리는 대시보드에서 실시간으로 답변할 수 있어요.
@@ -53,7 +53,7 @@ export default function LandingPage() {
             </div>
 
             {/* 메인 대시보드 이미지 */}
-            <div className="rounded-2xl bg-white shadow-xl p-6">
+            <div className="rounded-2xl bg-white shadow-xl p-2 lg:p-6">
               <div className="relative w-full aspect-[16/9]">
                 <Image
                   src="/images/landing/img_dashboard.png"
@@ -67,16 +67,16 @@ export default function LandingPage() {
         </section>
 
         {/* ================= VALUE STATEMENT ================= */}
-        <section className="py-24">
+        <section className="py-16 lg:py-24">
           <div className="flex flex-col gap-16 mx-auto max-w-6xl px-6">
             <div className="flex flex-col gap-8 text-center">
               <div className="flex flex-col gap-4">
-                <h2 className="text-3xl font-bold">
+                <h2 className="text-2xl md:text-3xl font-bold">
                   여기저기 흩어져 있는 고객 문의,
                   <br />
                   지금은 어떻게 확인하고 있나요?
                 </h2>
-                <p className="text-lg text-gray-600">
+                <p className="text-[15px] md:text-lg text-gray-600">
                   이메일, 전화 등 흩어진 고객 문의를
                   <br />
                   하나의 대시보드에 모아 관리해 보세요!
@@ -97,15 +97,15 @@ export default function LandingPage() {
         </section>
 
         {/* ================= MAIN FEATURE ================= */}
-        <section className="mx-6 py-24 rounded-2xl bg-primary-softer">
+        <section className="mx-6 py-16 lg:py-24 rounded-2xl bg-primary-softer">
           <div className="flex flex-col gap-16 mx-auto max-w-6xl px-6">
             <div className="flex flex-col gap-4 text-center">
-              <h2 className="text-3xl font-bold">
+              <h2 className="text-2xl md:text-3xl font-bold">
                 다다챗은 고객 문의와 응대를 위한
                 <br />
                 주요 기능을 담은 서비스입니다.
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-[15px] md:text-lg text-gray-600">
                 고객은 위젯으로 문의하고,
                 <br />
                 매니저는 대시보드에서 답변할 수 있습니다.
@@ -139,10 +139,14 @@ export default function LandingPage() {
                   className="rounded-2xl p-10 pb-4 bg-white shadow-lg"
                 >
                   <div className="flex flex-col gap-1">
-                    <h3 className="text-2xl font-semibold">{item.title}</h3>
-                    <p className="text-gray-600">{item.content}</p>
+                    <h3 className="text-lg md:text-2xl font-semibold">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm md:text-base text-gray-600">
+                      {item.content}
+                    </p>
                   </div>
-                  <div className="flex justify-end">
+                  <div className="flex justify-center lg:justify-end">
                     <Image
                       src={`/images/landing/${item.img}`}
                       alt={item.title}
@@ -157,15 +161,16 @@ export default function LandingPage() {
         </section>
 
         {/* ================= FEATURE ================= */}
-        <section className="py-24">
+        <section className="py-16 lg:py-24">
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex flex-col gap-4 text-center">
-              <h2 className="text-3xl font-bold">
+              <h2 className="text-2xl md:text-3xl font-bold">
                 앞으로 추가하면 좋을 기능들
               </h2>
-              <p className="text-lg text-gray-600">
-                1차적으로 기본 기능을 구현한 후, 추가적으로 필요한 기능들을
-                정리했습니다.
+              <p className="text-[15px] md:text-lg text-gray-600">
+                1차적으로 기본 기능을 구현한 후,
+                <br />
+                추가적으로 필요한 기능들을 정리했습니다.
               </p>
             </div>
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -197,8 +202,12 @@ export default function LandingPage() {
                   >
                     <Icon className="w-8 h-8 text-primary mb-4" />
                     <div className="flex flex-col gap-1 ">
-                      <h3 className="text-2xl font-semibold">{item.title}</h3>
-                      <p className="text-gray-600">{item.content}</p>
+                      <h3 className="text-lg md:text-2xl font-semibold">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm md:text-base text-gray-600">
+                        {item.content}
+                      </p>
                     </div>
                   </div>
                 );
@@ -208,11 +217,11 @@ export default function LandingPage() {
         </section>
 
         {/* ================= CTA ================= */}
-        <section className="mx-6 py-24 rounded-2xl bg-gradient-to-r from-primary-dark via-primary to-primary-light">
+        <section className="mx-6 py-16 lg:py-24 rounded-2xl bg-gradient-to-r from-primary-dark via-primary to-primary-light">
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex flex-col gap-9 text-center">
-              <h2 className="text-3xl font-bold">
-                고객 문의 채팅 서비스,&nbsp;
+              <h2 className="text-2xl md:text-3xl font-bold">
+                고객 문의 채팅 서비스,{" "}
                 <strong className="text-white">DadaChat</strong>
                 <br />
                 지금 바로 확인해보세요!

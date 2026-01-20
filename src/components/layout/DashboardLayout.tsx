@@ -3,6 +3,12 @@
 import NavigationBar from "@/components/layout/NavigationBar";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import ContentHeader from "./ContentHeader";
+import { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: 1280, // 대시보드, 1200px 폭으로 고정 (적응형)
+  initialScale: 1,
+};
 
 export default function DashboardLayout({
   children,
@@ -16,7 +22,7 @@ export default function DashboardLayout({
 
   return (
     <>
-      <div className="flex h-screen w-full overflow-hidden">
+      <div className="flex h-screen w-full min-w-7xl overflow-hidden">
         {/* Lnb */}
         <NavigationBar />
         <div className="flex flex-col flex-1 bg-white">

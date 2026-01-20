@@ -13,9 +13,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "DadaChat",
-  description: "웹사이트 CS 메세지 서비스",
+  title: "DadaChat | 웹 CS 관리 서비스",
+  description: "웹사이트 고객 문의(CS)를 대시보드에서는 관리하는 서비스",
+  openGraph: {
+    title: "DadaChat | 웹 CS 관리 서비스",
+    description: "웹사이트 고객 문의를 한 곳에서 관리하세요",
+    url: baseUrl,
+    siteName: "DadaChat",
+    images: [
+      {
+        url: "/images/og-image.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "ko_KR",
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {

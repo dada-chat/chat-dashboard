@@ -22,6 +22,7 @@ export default function ChatRoomPage() {
     prependMessages,
     setIsLoadingPrev,
     reset,
+    triggerRefresh,
   } = useChatStore();
 
   const fetchChattingRoom = async () => {
@@ -46,7 +47,9 @@ export default function ChatRoomPage() {
 
   const updateChattingRoomReadCount = async () => {
     try {
+      console.log("읽음 처리");
       await updateChattingRoomAsRead(roomId);
+      triggerRefresh();
     } catch (err) {
       console.error("실시간 읽음 처리 실패:", err);
     }
@@ -95,7 +98,7 @@ export default function ChatRoomPage() {
     updateChattingRoomReadCount();
 
     return () => reset(); // 페이지 벗어날 때 초기화
-  }, [roomId]);
+  }, [roomId, triggerRefresh]);
 
   return (
     <>

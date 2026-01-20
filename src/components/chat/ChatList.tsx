@@ -6,6 +6,7 @@ import { ChattingListItem } from "@/types/chatting";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import NodataArea from "../ui/NodataArea";
+import LoadingArea from "../ui/LoadingArea";
 
 export default function ChatList({
   refreshTrigger,
@@ -21,7 +22,6 @@ export default function ChatList({
 
   const fetchChattingList = async () => {
     try {
-      setIsLoading(true);
       const response = await getChattingList();
       if (response.success) {
         setChattingList(response.data);
@@ -48,7 +48,9 @@ export default function ChatList({
         <h2 className="text-sm font-semibold text-gray-600">채팅방 목록</h2>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {chattingList.length > 0 ? (
+        {isLoading ? (
+          <LoadingArea text="채팅 목록을 불러오는 중..." />
+        ) : chattingList.length > 0 ? (
           chattingList.map((item) => (
             <ChatListItem
               key={item.id}

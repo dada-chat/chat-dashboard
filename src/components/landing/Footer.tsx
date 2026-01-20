@@ -3,8 +3,8 @@ import Image from "next/image";
 export function Footer() {
   return (
     <footer>
-      <div className="mx-auto max-w-6xl flex justify-between gap-10 px-6 py-12">
-        <div className="flex items-center gap-6">
+      <div className="mx-auto max-w-6xl flex flex-col justify-center md:flex-row md:justify-between gap-6 px-6 py-12 lg:gap-10">
+        <div className="flex flex-col gap-2 items-center md:flex-row md:gap-6">
           <Image
             src="/images/logo.svg"
             alt="DadaChat logo"
@@ -19,7 +19,7 @@ export function Footer() {
             </dl>
           </div>
         </div>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm content-center text-gray-400 text-center md:text-left">
           &copy; 2025-2026 DadaChat. All rights reserved.
         </p>
       </div>

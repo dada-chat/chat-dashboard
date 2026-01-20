@@ -55,7 +55,7 @@ export default function ChatMembersInfo({
               <Link
                 href={domain.domainUrl}
                 target="_blank"
-                className="text-gray-800 font-semibold hover:text-primary hover:underline"
+                className="block truncate text-gray-800 font-semibold hover:text-primary hover:underline"
               >
                 {domain.domainUrl}
               </Link>

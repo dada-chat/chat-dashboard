@@ -3,6 +3,12 @@
 import NavigationBar from "@/components/layout/NavigationBar";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import ContentHeader from "./ContentHeader";
+import { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: 1200, // 대시보드, 1200px 폭으로 고정 (적응형)
+  initialScale: 1,
+};
 
 export default function DashboardLayout({
   children,

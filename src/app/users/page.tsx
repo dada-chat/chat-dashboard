@@ -174,7 +174,7 @@ export default function UserListPage() {
     <DashboardLayout>
       <div className="flex flex-col gap-4 px-6">
         <div>
-          {(user?.role === "ADMIN" || user?.role === "AGENT") && (
+          {user?.role === "ADMIN" && (
             <Button size="md" className="!w-auto" onClick={handleCreateClick}>
               사용자 추가
             </Button>
